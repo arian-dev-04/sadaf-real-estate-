@@ -29,14 +29,19 @@
     <!-- HEADER -->
     <header class="header">
       <div class="container header-in">
-        <a class="brand" href="#about" @click="closeMenu"
-          ><span class="logo" aria-hidden="true"
-            ><i class="lg-roof" /><i class="lg-chim"><s /></i
-            ><i class="lg-wall"
-              ><b class="lg-win a" /><b class="lg-win b" /><b
-                class="lg-door" /></i></span
-          ><span>{{ brand }}</span></a
-        >
+        <a class="brand" href="#about" @click="closeMenu">
+          <span class="logo" aria-hidden="true">
+            <i class="lg-roof" />
+            <i class="lg-chim"><s /></i>
+            <i class="lg-wall">
+              <b class="lg-win a" />
+              <b class="lg-win b" />
+              <b class="lg-door" />
+            </i>
+          </span>
+
+          <span>{{ brand }}</span>
+        </a>
 
         <nav ref="navRef" class="nav" aria-label="Primary">
           <span class="nav-pill" :style="pillStyle" />
@@ -429,50 +434,13 @@
             </div>
           </div>
 
-          <div class="cvis" aria-hidden="true">
-            <span class="r r1" />
-            <span class="r r2" />
-
-            <div class="seal">
-              <i class="spk k1">✦</i>
-              <i class="spk k2">✦</i>
-
-              <div class="scene">
-                <div class="orbit">
-                  <span class="sun2" />
-                </div>
-
-                <span class="sc" />
-                <span class="gnd" />
-
-                <div class="sh">
-                  <span class="sh-chim">
-                    <s />
-                    <s />
-                  </span>
-
-                  <span class="sh-roof" />
-
-                  <div class="sh-wall">
-                    <span class="sh-win a" />
-                    <span class="sh-win b" />
-                    <span class="sh-lit" />
-                    <span class="sh-door" />
-                  </div>
-                </div>
-
-                <div class="mbox">
-                  <span class="mp" />
-
-                  <span class="mb">
-                    <span class="mflag" />
-                  </span>
-                </div>
-
-                <span class="env" />
-                <span class="tw">✦</span>
-              </div>
-            </div>
+          <!-- OFFICE LOTTIE -->
+          <div class="cvis">
+            <div
+              ref="officeLottieRef"
+              class="office-lottie"
+              aria-hidden="true"
+            ></div>
 
             <a :href="`mailto:${email}`">
               {{ email }}
@@ -568,6 +536,7 @@ import {
 } from "vue";
 import lottie from "lottie-web";
 import buildingsAnimation from "./assets/animations/buildings.json";
+import solarPoweredHouseAnimation from "./assets/animations/Solar Powered House.json";
 
 const language = ref("fa");
 const theme = ref("light");
@@ -585,8 +554,10 @@ const animated = reactive({
 });
 
 const lottieRef = ref(null);
+const officeLottieRef = ref(null);
 
 let lottieInstance = null;
+let officeLottieInstance = null;
 let revealIO, sectionIO, raf, loadRaf;
 
 const dir = computed(() => (language.value === "fa" ? "rtl" : "ltr"));
@@ -1108,6 +1079,25 @@ const initLottie = () => {
   });
 };
 
+/* ---------- OFFICE LOTTIE ---------- */
+
+const initOfficeLottie = () => {
+  if (!officeLottieRef.value) return;
+
+  officeLottieInstance?.destroy();
+
+  officeLottieInstance = lottie.loadAnimation({
+    container: officeLottieRef.value,
+    renderer: "svg",
+    loop: true,
+    autoplay: true,
+    animationData: solarPoweredHouseAnimation,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid meet",
+    },
+  });
+};
+
 /* ---------- NAV PILL ---------- */
 
 const navRef = ref(null);
@@ -1294,6 +1284,7 @@ onMounted(async () => {
   await nextTick();
 
   initLottie();
+  initOfficeLottie();
 
   sectionIO = new IntersectionObserver(
     (es) => {
@@ -1345,6 +1336,9 @@ onBeforeUnmount(() => {
 
   lottieInstance?.destroy();
   lottieInstance = null;
+
+  officeLottieInstance?.destroy();
+  officeLottieInstance = null;
 
   document.body.classList.remove("lock");
 });
@@ -3522,381 +3516,19 @@ h2 em {
   box-shadow: var(--shadow);
 }
 
-.r {
-  position: absolute;
-  border: 1px dashed var(--line);
-  border-radius: 50%;
+.office-lottie {
+  width: min(360px, 78%);
+  height: 360px;
 
-  animation: spin 24s linear infinite;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.r1 {
-  width: 300px;
-  height: 300px;
-}
-
-.r2 {
-  width: 220px;
-  height: 220px;
-  animation-direction: reverse;
-  animation-duration: 18s;
-}
-
-.seal {
-  position: relative;
-  z-index: 2;
-  width: 16em;
-  height: 16em;
-  font-size: 13px;
-  border-radius: 50%;
-
-  background: radial-gradient(
-    circle at 30% 24%,
-    #fff1b8,
-    var(--gold-hi) 42%,
-    var(--gold-lo)
-  );
-
-  box-shadow:
-    0 2.4em 5em color-mix(in srgb, var(--gold) 38%, transparent),
-    inset 0 0 0 0.5em rgba(255, 255, 255, 0.22);
-
-  animation: floaty 6s ease-in-out infinite;
-}
-
-.seal::after {
-  content: "";
-  position: absolute;
-  inset: -1.4em;
-  border-radius: 50%;
-  border: 1px solid var(--line);
-
-  animation: sealPulse 3.2s ease-out infinite;
-}
-
-.spk {
-  position: absolute;
-  z-index: 5;
-  font-style: normal;
-  color: #fff8dc;
-  font-size: 1.8em;
-
-  animation: twinkle 2.6s ease-in-out infinite;
-}
-
-.k1 {
-  top: 0.2em;
-  right: 1.6em;
-}
-
-.k2 {
-  bottom: 1em;
-  left: 0.4em;
-  animation-delay: 1.2s;
-  font-size: 1.3em;
-}
-
-.scene,
-.scene > *,
-.sh > *,
-.sh-wall > *,
-.mbox > *,
-.sh-chim > * {
-  position: absolute;
-}
-
-.scene {
-  inset: 1.1em;
-  border-radius: 50%;
-  overflow: hidden;
-
-  background: linear-gradient(180deg, var(--sky-a), var(--sky-b) 80%);
-
-  box-shadow:
-    inset 0 0 0 0.18em rgba(255, 255, 255, 0.4),
-    inset 0 1em 2em rgba(0, 0, 0, 0.08);
-}
-
-.orbit {
-  inset: 0;
-  z-index: 0;
-  animation: spin 22s linear infinite;
-}
-
-.sun2 {
-  top: 0.7em;
-  left: 50%;
-  width: 1.6em;
-  height: 1.6em;
-  margin-left: -0.8em;
-  border-radius: 50%;
-
-  background: radial-gradient(
-    circle at 35% 30%,
-    #fff8cf,
-    var(--gold-hi) 60%,
-    var(--gold)
-  );
-
-  box-shadow: 0 0 1.2em color-mix(in srgb, var(--gold-hi) 70%, transparent);
-}
-
-[data-theme="dark"] .sun2 {
-  background: radial-gradient(circle at 65% 35%, #fffdf0, #e8dfb8 70%);
-
-  box-shadow: 0 0 1em rgba(255, 250, 220, 0.4);
-}
-
-.sc {
-  top: 3em;
-  left: 1.4em;
-  width: 3.4em;
-  height: 1em;
-  border-radius: 99px;
-  background: var(--cloud);
-  opacity: 0.9;
-
-  animation: drift 9s ease-in-out infinite alternate;
-}
-
-.sc::before,
-.sc::after {
-  content: "";
-  position: absolute;
-  border-radius: 50%;
-  background: inherit;
-}
-
-.sc::before {
-  width: 1.2em;
-  height: 1.2em;
-  top: -0.6em;
-  left: 0.5em;
-}
-
-.sc::after {
-  width: 1.5em;
-  height: 1.5em;
-  top: -0.8em;
-  left: 1.5em;
-}
-
-.gnd {
-  left: -1em;
-  right: -1em;
-  bottom: -1em;
-  height: 4.6em;
-  z-index: 1;
-
-  border-radius: 50% 50% 0 0 / 1.4em 1.4em 0 0;
-
-  background: var(--hill-a);
-}
-
-.sh {
-  left: 1.8em;
-  bottom: 3.2em;
-  width: 8em;
-  height: 7.6em;
-  z-index: 3;
-
-  animation: houseHop 6s ease-in-out infinite;
-
-  transform-origin: bottom center;
-}
-
-.sh-roof {
-  top: 0;
-  left: -0.7em;
-  width: 9.4em;
-  height: 3.6em;
-  z-index: 2;
-
-  clip-path: polygon(50% 0, 100% 100%, 0 100%);
-
-  background: linear-gradient(150deg, var(--roof-a), var(--roof-b));
-}
-
-.sh-chim {
-  top: 0.5em;
-  left: 6em;
-  width: 0.9em;
-  height: 2em;
-  z-index: 1;
-
-  border-radius: 0.15em 0.15em 0 0;
-
-  background: linear-gradient(var(--roof-b), var(--gold-lo));
-}
-
-.sh-chim s {
-  left: 0.1em;
-  bottom: 100%;
-  width: 0.7em;
-  height: 0.7em;
-  border-radius: 50%;
-  background: var(--cloud);
-  opacity: 0;
-
-  animation: smokeSm 3s ease-out infinite;
-}
-
-.sh-chim s:nth-child(2) {
-  animation-delay: 1.4s;
-}
-
-.sh-wall {
-  bottom: 0;
-  left: 0.5em;
-  width: 7em;
-  height: 4.3em;
-  z-index: 3;
-
-  border-radius: 0.3em 0.3em 0.6em 0.6em;
-
-  background: var(--wall);
-
-  border: 0.12em solid var(--wall-line);
-}
-
-.sh-win {
-  top: 0.8em;
-  width: 1.5em;
-  height: 1.5em;
-  border-radius: 0.2em;
-
-  background: var(--win);
-
-  border: 0.12em solid var(--wall-line);
-
-  box-shadow: 0 0 0.8em var(--win-glow);
-
-  animation: winPulse 6s ease-in-out infinite;
-}
-
-.sh-win.a {
-  left: 0.8em;
-}
-
-.sh-win.b {
-  right: 0.8em;
-}
-
-.sh-lit,
-.sh-door {
-  bottom: 0;
-  left: 50%;
-  margin-left: -0.95em;
-  width: 1.9em;
-  height: 2.9em;
-
-  border-radius: 1em 1em 0 0;
-}
-
-.sh-lit {
-  background: radial-gradient(
-    ellipse at 50% 100%,
-    #fff3b8,
-    var(--gold-hi) 60%,
-    var(--gold)
-  );
-
-  opacity: 0;
-
-  animation: mlit 6s ease-in-out infinite;
-}
-
-.sh-door {
-  background: linear-gradient(var(--door), var(--door-d));
-
-  transform-origin: left center;
-
-  animation: mdoor 6s ease-in-out infinite;
-}
-
-.mbox {
-  left: 10.6em;
-  bottom: 3.2em;
-  width: 2.4em;
-  height: 3.4em;
-  z-index: 4;
-}
-
-.mp {
-  bottom: 0;
-  left: 1em;
-  width: 0.35em;
-  height: 2.2em;
-  background: var(--gold-lo);
-  border-radius: 0.1em;
-}
-
-.mb {
-  top: 0;
-  left: 0;
-  width: 2.4em;
-  height: 1.4em;
-
-  border-radius: 1.2em 1.2em 0.2em 0.2em;
-
-  background: linear-gradient(var(--door), var(--door-d));
-}
-
-.mflag {
-  top: 0.2em;
-  right: -0.35em;
-  width: 0.3em;
-  height: 1.4em;
-  border-radius: 0.1em;
-  background: #e5684f;
-
-  transform-origin: bottom center;
-
-  transform: rotate(80deg);
-
-  animation: flagUp 6s ease-in-out infinite;
-}
-
-.env {
-  z-index: 6;
-  left: 11.1em;
-  bottom: 6.9em;
-  width: 1.7em;
-  height: 1.15em;
-  border-radius: 0.15em;
-
-  background: #fff;
-
-  border: 0.1em solid var(--gold-lo);
-
-  opacity: 0;
-
-  animation: envFly 6s ease-in-out infinite;
-
-  box-shadow: 0 0.3em 0.5em rgba(0, 0, 0, 0.2);
-}
-
-.env::before {
-  content: "";
-  position: absolute;
-  inset: 0 0 45% 0;
-
-  clip-path: polygon(0 0, 100% 0, 50% 100%);
-
-  background: #f1e6c4;
-}
-
-.tw {
-  z-index: 7;
-  left: 11.4em;
-  bottom: 7.2em;
-  font-size: 1.4em;
-  color: var(--gold-hi);
-  opacity: 0;
-
-  animation: sparkle 6s ease-out -0.9s infinite;
-
-  filter: drop-shadow(0 0 0.3em var(--gold));
+.office-lottie svg {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
 }
 
 .cvis a {
@@ -4719,6 +4351,11 @@ h2 em {
 
   .cvis {
     min-height: 340px;
+  }
+
+  .office-lottie {
+    width: min(300px, 82vw);
+    height: 300px;
   }
 
   .seal {
