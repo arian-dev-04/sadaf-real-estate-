@@ -30,15 +30,30 @@
     <header class="header">
       <div class="container header-in">
         <a class="brand" href="#about" @click="closeMenu">
-          <span class="logo" aria-hidden="true">
-            <i class="lg-roof" />
-            <i class="lg-chim"><s /></i>
-            <i class="lg-wall">
-              <b class="lg-win a" />
-              <b class="lg-win b" />
-              <b class="lg-door" />
-            </i>
-          </span>
+          <svg
+            class="logo"
+            viewBox="0 0 40 40"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <rect class="lg-bg" x="0.5" y="0.5" width="39" height="39" rx="9" />
+            <path
+              class="lg-l"
+              pathLength="1"
+              d="M15 32V9H25V32M9 32V21H15M25 25H31V32M6 32H34"
+            />
+            <rect
+              v-for="(w, i) in logoWins"
+              :key="i"
+              class="lg-w"
+              :class="{ on: w.on }"
+              :style="{ '--i': i }"
+              :x="w.x"
+              :y="w.y"
+              width="2.6"
+              height="2.6"
+            />
+          </svg>
 
           <span>{{ brand }}</span>
         </a>
@@ -51,6 +66,7 @@
             :key="n.id"
             :href="`#${n.id}`"
             :class="{ active: activeSection === n.id }"
+            :aria-current="activeSection === n.id ? 'true' : undefined"
             @click="activeSection = n.id"
           >
             {{ n.label[language] }}
@@ -75,6 +91,15 @@
             :aria-label="theme === 'dark' ? 'Light' : 'Dark'"
             @click="toggleTheme"
           >
+            <svg class="ti ti-sun" viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="4" />
+              <path
+                d="M12 2.5V5M12 19V21.5M2.5 12H5M19 12H21.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"
+              />
+            </svg>
+            <svg class="ti ti-moon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M20 14.2A8.5 8.5 0 0 1 9.8 4a8.6 8.6 0 1 0 10.2 10.2z" />
+            </svg>
             <span class="tk" />
           </button>
 
@@ -156,151 +181,574 @@
             </div>
           </div>
 
-          <!-- HERO ART -->
+          <!-- HERO ART: architectural elevation -->
           <div class="art-wrap" aria-hidden="true">
             <div class="art">
-              <div class="sky">
-                <span class="orb" />
+              <svg
+                class="arc"
+                viewBox="0 0 600 540"
+                preserveAspectRatio="xMidYMid meet"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <defs>
+                  <pattern
+                    id="arc-grid"
+                    width="40"
+                    height="40"
+                    patternUnits="userSpaceOnUse"
+                  >
+                    <path
+                      d="M40 0H0V40"
+                      fill="none"
+                      style="stroke: var(--a-grid)"
+                      stroke-width="1"
+                    />
+                  </pattern>
+                  <radialGradient id="arc-fade" cx="50%" cy="46%" r="62%">
+                    <stop offset="0" stop-color="#fff" />
+                    <stop offset="1" stop-color="#000" />
+                  </radialGradient>
+                  <mask id="arc-grid-mask">
+                    <rect width="600" height="540" fill="url(#arc-fade)" />
+                  </mask>
+                  <pattern
+                    id="arc-far"
+                    width="6"
+                    height="6"
+                    patternUnits="userSpaceOnUse"
+                  >
+                    <rect width="6" height="6" style="fill: var(--a-far)" />
+                    <path
+                      d="M0 0V6"
+                      style="stroke: var(--a-far-line)"
+                      stroke-width="1"
+                    />
+                  </pattern>
+                  <pattern
+                    id="arc-near"
+                    width="6"
+                    height="6"
+                    patternUnits="userSpaceOnUse"
+                  >
+                    <rect width="6" height="6" style="fill: var(--a-near)" />
+                    <path
+                      d="M0 0V6"
+                      style="stroke: var(--a-near-line)"
+                      stroke-width="1"
+                    />
+                  </pattern>
+                  <linearGradient id="arc-sky" x1="0" x2="0" y1="0" y2="1">
+                    <stop offset="0" style="stop-color: var(--sky-a)" />
+                    <stop offset="0.8" style="stop-color: var(--sky-b)" />
+                  </linearGradient>
+                  <linearGradient id="arc-tower" x1="0" x2="1" y1="0" y2="0">
+                    <stop offset="0" style="stop-color: var(--a-paper)" />
+                    <stop offset="1" style="stop-color: var(--a-paper2)" />
+                  </linearGradient>
+                  <linearGradient id="arc-ground" x1="0" x2="0" y1="0" y2="1">
+                    <stop offset="0" style="stop-color: var(--a-ground)" />
+                    <stop offset="1" style="stop-color: var(--a-ground2)" />
+                  </linearGradient>
+                  <linearGradient id="arc-refl" x1="0" x2="0" y1="0" y2="1">
+                    <stop
+                      offset="0"
+                      style="stop-color: var(--a-ink)"
+                      stop-opacity="0.22"
+                    />
+                    <stop
+                      offset="1"
+                      style="stop-color: var(--a-ink)"
+                      stop-opacity="0"
+                    />
+                  </linearGradient>
+                  <linearGradient id="arc-glint" x1="0" x2="1" y1="0" y2="0">
+                    <stop offset="0" stop-color="#fff" stop-opacity="0" />
+                    <stop offset="0.5" stop-color="#fff" stop-opacity="0.5" />
+                    <stop offset="1" stop-color="#fff" stop-opacity="0" />
+                  </linearGradient>
+                  <radialGradient id="arc-glare" cx="50%" cy="50%" r="50%">
+                    <stop offset="0" stop-color="#fff" stop-opacity="0.28" />
+                    <stop offset="1" stop-color="#fff" stop-opacity="0" />
+                  </radialGradient>
+                  <linearGradient id="arc-haze" x1="0" x2="0" y1="0" y2="1">
+                    <stop
+                      offset="0"
+                      style="stop-color: var(--sky-b)"
+                      stop-opacity="0"
+                    />
+                    <stop
+                      offset="1"
+                      style="stop-color: var(--sky-b)"
+                      stop-opacity="0.7"
+                    />
+                  </linearGradient>
+                  <mask id="arc-moon-mask">
+                    <rect x="400" y="50" width="110" height="110" fill="#fff" />
+                    <circle cx="464" cy="95" r="25" fill="#000" />
+                  </mask>
+                  <clipPath id="arc-tower-clip">
+                    <rect x="210" y="142" width="180" height="288" />
+                  </clipPath>
+                </defs>
 
-                <span class="star s1">✦</span>
-                <span class="star s2">✦</span>
-                <span class="star s3">✦</span>
-
-                <span class="cloud c1" />
-                <span class="cloud c2" />
-
-                <span class="bird b1" />
-                <span class="bird b2" />
-
-                <span class="shoot" />
-
-                <span class="hill hl-a" />
-                <span class="hill hl-b" />
-
-                <span class="road">
-                  <i />
-                </span>
-
-                <div class="car">
-                  <i class="cw c-a" />
-                  <i class="cw c-b" />
-                </div>
-
-                <div class="tree">
-                  <i />
-                  <b />
-                </div>
-
-                <div class="bush">
-                  <i />
-                  <i />
-                </div>
-
-                <span class="shadow" />
-
-                <div class="sign">
-                  <span class="post" />
-
-                  <div class="board">
-                    <span class="face front">
-                      {{ language === "fa" ? "برای فروش" : "For sale" }}
-                    </span>
-
-                    <span class="face back">
-                      {{ language === "fa" ? "فروخته شد" : "Sold" }}
-                    </span>
-                  </div>
-                </div>
-
-                <div class="house-wrap">
-                  <div class="house">
-                    <span class="chimney">
-                      <s />
-                      <s />
-                      <s />
-                    </span>
-
-                    <span class="roof" />
-                    <span class="attic" />
-
-                    <div class="wall">
-                      <span class="win w1" />
-                      <span class="win w2" />
-
-                      <span class="lamp l1" />
-                      <span class="lamp l2" />
-
-                      <span class="pot p1">
-                        <i />
-                      </span>
-
-                      <span class="pot p2">
-                        <i />
-                      </span>
-
-                      <div class="doorway">
-                        <div class="room">
-                          <span class="glow" />
-
-                          <span class="fig f1">
-                            <i />
-                          </span>
-
-                          <span class="fig f2">
-                            <i />
-                          </span>
-
-                          <span class="fig f3">
-                            <i />
-                          </span>
-                        </div>
-
-                        <span class="door">
-                          <i />
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <span class="sp sp1">✦</span>
-                <span class="sp sp2">✦</span>
-                <span class="sp sp3">✦</span>
-                <span class="sp sp4">✦</span>
-
-                <span
-                  v-for="(c, i) in confetti"
-                  :key="i"
-                  class="cf"
-                  :style="c"
+                <!-- panel -->
+                <rect class="arc-panel" width="600" height="540" rx="10" />
+                <rect
+                  class="arc-gridfill"
+                  width="600"
+                  height="430"
+                  fill="url(#arc-grid)"
+                  mask="url(#arc-grid-mask)"
                 />
 
-                <div class="key">
-                  <i class="bow" />
-                  <i class="shaft" />
-                  <i class="teeth" />
-                </div>
+                <!-- sun / moon: swapped by theme -->
+                <g class="orb sun">
+                  <g class="arc-sun">
+                    <circle cx="452" cy="104" r="52" class="ring-o" />
+                    <circle cx="452" cy="104" r="34" class="ring-i" />
+                    <circle cx="452" cy="104" r="34" class="disc" />
+                  </g>
+                </g>
+                <g class="orb moon">
+                  <g class="arc-sun">
+                    <circle cx="452" cy="104" r="52" class="ring-o" />
+                    <circle
+                      cx="452"
+                      cy="104"
+                      r="30"
+                      class="moon-body"
+                      mask="url(#arc-moon-mask)"
+                    />
+                  </g>
+                </g>
+
+                <!-- clouds -->
+                <g class="arc-clouds">
+                  <rect
+                    class="cloud cl1"
+                    x="60"
+                    y="76"
+                    width="118"
+                    height="3"
+                    rx="1.5"
+                  />
+                  <rect
+                    class="cloud cl2"
+                    x="96"
+                    y="92"
+                    width="64"
+                    height="3"
+                    rx="1.5"
+                  />
+                  <rect
+                    class="cloud cl3"
+                    x="300"
+                    y="58"
+                    width="92"
+                    height="3"
+                    rx="1.5"
+                  />
+                </g>
+
+                <!-- skyline (parallax) -->
+                <g class="px px-far">
+                  <rect
+                    v-for="(b, i) in farSky"
+                    :key="'f' + i"
+                    class="rise"
+                    :style="{ '--d': (0.5 + i * 0.09).toFixed(2) + 's' }"
+                    :x="b.x"
+                    :y="430 - b.h"
+                    :width="b.w"
+                    :height="b.h"
+                    fill="url(#arc-far)"
+                  />
+                </g>
+                <g class="px px-near">
+                  <rect
+                    v-for="(b, i) in nearSky"
+                    :key="'n' + i"
+                    class="rise"
+                    :style="{ '--d': (0.8 + i * 0.1).toFixed(2) + 's' }"
+                    :x="b.x"
+                    :y="430 - b.h"
+                    :width="b.w"
+                    :height="b.h"
+                    fill="url(#arc-near)"
+                  />
+                </g>
+
+                <rect
+                  class="haze"
+                  x="0"
+                  y="330"
+                  width="600"
+                  height="100"
+                  fill="url(#arc-haze)"
+                />
+
+                <!-- ground plane + reflection -->
+                <rect
+                  class="fade"
+                  x="0"
+                  y="430"
+                  width="600"
+                  height="110"
+                  fill="url(#arc-ground)"
+                  style="--d: 0.2s"
+                />
+                <g class="fade" style="--d: 2.4s">
+                  <rect
+                    x="210"
+                    y="430"
+                    width="180"
+                    height="96"
+                    fill="url(#arc-refl)"
+                  />
+                  <rect
+                    x="96"
+                    y="430"
+                    width="114"
+                    height="60"
+                    fill="url(#arc-refl)"
+                    opacity="0.7"
+                  />
+                  <rect
+                    x="390"
+                    y="430"
+                    width="110"
+                    height="52"
+                    fill="url(#arc-refl)"
+                    opacity="0.7"
+                  />
+                </g>
+                <path
+                  class="paving fade"
+                  style="--d: 2.2s"
+                  d="M0 452H600M0 476H600M0 506H600"
+                />
+
+                <!-- building -->
+                <g class="px px-mid">
+                  <!-- wings -->
+                  <rect
+                    class="rise"
+                    style="--d: 1s"
+                    x="96"
+                    y="322"
+                    width="114"
+                    height="108"
+                    fill="var(--a-paper2)"
+                  />
+                  <rect
+                    class="rise"
+                    style="--d: 1.1s"
+                    x="390"
+                    y="358"
+                    width="110"
+                    height="72"
+                    fill="var(--a-paper2)"
+                  />
+                  <path
+                    class="line draw"
+                    style="--d: 0.4s; --t: 1.3s"
+                    pathLength="1"
+                    d="M210 322H96V430"
+                  />
+                  <path
+                    class="line draw"
+                    style="--d: 0.5s; --t: 1.3s"
+                    pathLength="1"
+                    d="M390 358H500V430"
+                  />
+                  <path
+                    class="line-thin draw"
+                    style="--d: 1.3s; --t: 1s"
+                    pathLength="1"
+                    d="M90 394H210M90 358H210M390 394H506"
+                  />
+                  <path
+                    class="line-thin fade"
+                    style="--d: 2.1s"
+                    d="M112 322V302M194 322V302M104 302H202M112 302v-4M128 302v-4M144 302v-4M160 302v-4M176 302v-4M192 302v-4"
+                  />
+                  <path
+                    class="line-thin fade"
+                    style="--d: 2.1s"
+                    d="M392 350H498M400 350v8M416 350v8M432 350v8M448 350v8M464 350v8M480 350v8M496 350v8"
+                  />
+
+                  <!-- tower -->
+                  <rect
+                    class="rise"
+                    style="--d: 1.1s; --t: 1.5s"
+                    x="210"
+                    y="142"
+                    width="180"
+                    height="288"
+                    fill="url(#arc-tower)"
+                  />
+                  <rect
+                    class="fade"
+                    style="--d: 2s"
+                    x="374"
+                    y="142"
+                    width="16"
+                    height="288"
+                    fill="var(--a-ink)"
+                    opacity="0.06"
+                  />
+                  <rect
+                    class="fade"
+                    style="--d: 1.9s"
+                    x="246"
+                    y="124"
+                    width="108"
+                    height="18"
+                    fill="var(--a-paper2)"
+                  />
+                  <path
+                    class="line draw"
+                    style="--d: 0.3s; --t: 1.7s"
+                    pathLength="1"
+                    d="M210 430V142H390V430"
+                  />
+                  <path
+                    class="line draw"
+                    style="--d: 0.9s; --t: 0.9s"
+                    pathLength="1"
+                    d="M246 142V124H354V142"
+                  />
+                  <path
+                    class="line-thin fade"
+                    style="--d: 2.1s"
+                    d="M262 124V142M278 124V142M294 124V142M310 124V142M326 124V142M342 124V142"
+                  />
+                  <path
+                    class="line-thin draw"
+                    style="--d: 0.9s; --t: 1.5s"
+                    pathLength="1"
+                    :d="slabs"
+                  />
+                  <path
+                    class="crown draw"
+                    style="--d: 1.2s; --t: 0.9s"
+                    pathLength="1"
+                    d="M204 142H396"
+                  />
+
+                  <!-- glazing -->
+                  <g class="glass fade" style="--d: 1.8s">
+                    <rect
+                      v-for="w in windows"
+                      :key="'g' + w.k"
+                      :x="w.x"
+                      :y="w.y"
+                      width="30"
+                      height="20"
+                    />
+                  </g>
+                  <g clip-path="url(#arc-tower-clip)">
+                    <rect
+                      v-for="w in windows"
+                      :key="'l' + w.k"
+                      class="lit"
+                      :class="{
+                        on: w.lit,
+                        live: w.lit && w.live,
+                        'live-on': !w.lit && w.live,
+                      }"
+                      :style="w.style"
+                      :x="w.x"
+                      :y="w.y"
+                      width="30"
+                      height="20"
+                    />
+                  </g>
+                  <path class="mullion fade" style="--d: 1.9s" :d="mullions" />
+
+                  <!-- entrance -->
+                  <rect
+                    class="fade"
+                    style="--d: 1.8s"
+                    x="282"
+                    y="400"
+                    width="36"
+                    height="30"
+                    fill="var(--a-glass)"
+                  />
+                  <rect
+                    class="lit on"
+                    style="--d: 3.3s"
+                    x="282"
+                    y="400"
+                    width="36"
+                    height="30"
+                  />
+                  <path
+                    class="mullion fade"
+                    style="--d: 1.9s"
+                    d="M300 400V430"
+                  />
+                  <path
+                    class="crown draw"
+                    style="--d: 2.6s; --t: 0.7s"
+                    pathLength="1"
+                    d="M270 394H330"
+                  />
+
+                  <!-- glint + pointer glare -->
+                  <g clip-path="url(#arc-tower-clip)">
+                    <rect
+                      class="glint"
+                      x="250"
+                      y="142"
+                      width="46"
+                      height="288"
+                      fill="url(#arc-glint)"
+                      transform="skewX(-14)"
+                    />
+                    <g class="glare">
+                      <ellipse
+                        cx="300"
+                        cy="270"
+                        rx="120"
+                        ry="150"
+                        fill="url(#arc-glare)"
+                      />
+                    </g>
+                  </g>
+
+                  <!-- service tour -->
+                  <g class="tour">
+                    <g class="ti0" :style="{ '--o': tour[0].o }">
+                      <rect
+                        class="hl"
+                        x="210"
+                        y="142"
+                        width="180"
+                        height="288"
+                      />
+                      <path class="ld" d="M172 196H222" />
+                      <circle class="dot" cx="222" cy="196" r="2.6" />
+                    </g>
+                    <g class="ti1" :style="{ '--o': tour[1].o }">
+                      <rect
+                        class="hl"
+                        x="96"
+                        y="322"
+                        width="114"
+                        height="108"
+                      />
+                      <path class="ld" d="M108 268V336" />
+                      <circle class="dot" cx="108" cy="336" r="2.6" />
+                    </g>
+                    <g class="ti2" :style="{ '--o': tour[2].o }">
+                      <rect
+                        class="hl"
+                        x="390"
+                        y="358"
+                        width="110"
+                        height="72"
+                      />
+                      <path class="ld" d="M445 318V376" />
+                      <circle class="dot" cx="445" cy="376" r="2.6" />
+                    </g>
+                  </g>
+                </g>
+
+                <!-- ground line -->
+                <path
+                  class="ground draw"
+                  style="--d: 0.1s; --t: 1.2s"
+                  pathLength="1"
+                  d="M0 430H600"
+                />
+
+                <!-- cypress -->
+                <g class="cypress">
+                  <ellipse
+                    class="rise"
+                    style="--d: 2.3s"
+                    cx="64"
+                    cy="396"
+                    rx="7"
+                    ry="34"
+                  />
+                  <ellipse
+                    class="rise"
+                    style="--d: 2.45s"
+                    cx="80"
+                    cy="404"
+                    rx="6"
+                    ry="26"
+                  />
+                  <ellipse
+                    class="rise"
+                    style="--d: 2.6s"
+                    cx="512"
+                    cy="400"
+                    rx="7"
+                    ry="30"
+                  />
+                </g>
+
+                <!-- dimension -->
+                <g class="dim">
+                  <path
+                    class="draw"
+                    style="--d: 2.5s; --t: 1s"
+                    pathLength="1"
+                    d="M528 430V142"
+                  />
+                  <path
+                    class="fade"
+                    style="--d: 3.2s"
+                    d="M522 436L534 424M522 148L534 136M396 142H536"
+                  />
+                  <text
+                    class="fade"
+                    style="--d: 3.3s"
+                    x="528"
+                    y="128"
+                    text-anchor="middle"
+                  >
+                    +31.50
+                  </text>
+                  <text
+                    class="fade"
+                    style="--d: 3.3s"
+                    x="528"
+                    y="452"
+                    text-anchor="middle"
+                  >
+                    ±0.00
+                  </text>
+                </g>
+              </svg>
+
+              <div
+                v-for="(t, i) in tour"
+                :key="t.k"
+                class="tag"
+                :class="`tg${i}`"
+                :style="{ '--o': t.o }"
+              >
+                <i />
+                {{ t.label[language] }}
               </div>
 
-              <div class="badge">
-                {{ t("hero.product.title") }}
-              </div>
-
-              <div class="mini-card">
-                <span>⌂</span>
-
+              <div class="tblock">
+                <span class="tb-mark" />
                 <p>
+                  <b>{{ t("hero.product.title") }}</b>
                   <small>
-                    {{ language === "fa" ? "برای خانواده‌ها" : "For families" }}
-                  </small>
-
-                  <b>
                     {{
                       language === "fa"
-                        ? "خانه‌ای برای زندگی"
-                        : "A place to live"
+                        ? "املاک صدف · تهران"
+                        : "Sadaf Estate · Tehran"
                     }}
-                  </b>
+                  </small>
                 </p>
               </div>
             </div>
@@ -456,18 +904,37 @@
         <div class="f-top">
           <div class="f-brand">
             <a class="brand" href="#about">
-              <span class="logo" aria-hidden="true">
-                <i class="lg-roof" />
-                <i class="lg-chim">
-                  <s />
-                </i>
-
-                <i class="lg-wall">
-                  <b class="lg-win a" />
-                  <b class="lg-win b" />
-                  <b class="lg-door" />
-                </i>
-              </span>
+              <svg
+                class="logo"
+                viewBox="0 0 40 40"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <rect
+                  class="lg-bg"
+                  x="0.5"
+                  y="0.5"
+                  width="39"
+                  height="39"
+                  rx="9"
+                />
+                <path
+                  class="lg-l"
+                  pathLength="1"
+                  d="M15 32V9H25V32M9 32V21H15M25 25H31V32M6 32H34"
+                />
+                <rect
+                  v-for="(w, i) in logoWins"
+                  :key="i"
+                  class="lg-w"
+                  :class="{ on: w.on }"
+                  :style="{ '--i': i }"
+                  :x="w.x"
+                  :y="w.y"
+                  width="2.6"
+                  height="2.6"
+                />
+              </svg>
 
               <span>{{ brand }}</span>
             </a>
@@ -571,12 +1038,17 @@ const num = (n) =>
 
 /* ---------- DATA ---------- */
 
-const city = [
-  { h: 5, w: 3.2 },
-  { h: 8, w: 3.6 },
-  { h: 5.6, w: 4.6, home: true },
-  { h: 10, w: 3.4 },
-  { h: 6.4, w: 3.2 },
+const logoWins = [
+  { x: 16.6, y: 12, on: true },
+  { x: 20.8, y: 12, on: false },
+  { x: 16.6, y: 16.5, on: false },
+  { x: 20.8, y: 16.5, on: true },
+  { x: 16.6, y: 21, on: true },
+  { x: 20.8, y: 21, on: false },
+  { x: 16.6, y: 25.5, on: false },
+  { x: 20.8, y: 25.5, on: true },
+  { x: 10.7, y: 24.5, on: true },
+  { x: 26.7, y: 27.5, on: false },
 ];
 
 const navItems = [
@@ -1152,15 +1624,96 @@ const resetPointer = (e) => {
   e.currentTarget.style.setProperty("--my", 0);
 };
 
-const palette = ["var(--gold-hi)", "#e5684f", "var(--mint)", "#5b9dff"];
+/* ---------- HERO ARCHITECTURE (SVG elevation) ---------- */
 
-const confetti = Array.from({ length: 12 }, (_, i) => ({
-  "--x": ((i - 5.5) * 1.6).toFixed(1) + "em",
-  "--y": (-(6 + (i % 3) * 2.4)).toFixed(1) + "em",
-  "--r": 200 + i * 47 + "deg",
-  "--c": palette[i % 4],
-  animationDelay: (i % 4) * 0.05 + "s",
-}));
+const GROUND = 430;
+const FLOOR_H = 36;
+const WIN_W = 30;
+const WIN_H = 20;
+
+// deterministic pseudo-random: the same "occupancy" pattern on every load
+const hash = (n) => {
+  const x = Math.sin(n * 91.7 + 13.1) * 43758.5453;
+  return x - Math.floor(x);
+};
+
+const buildWindows = ({ x0, w, floors, bays, seed, skip }) => {
+  const gap = (w - bays * WIN_W) / (bays + 1);
+  const out = [];
+
+  for (let f = 0; f < floors; f++) {
+    for (let b = 0; b < bays; b++) {
+      if (skip?.(f, b)) continue;
+
+      const r = hash(seed + f * 7 + b * 3);
+      const lit = r > 0.52;
+
+      out.push({
+        k: `${seed}-${f}-${b}`,
+        x: +(x0 + gap + b * (WIN_W + gap)).toFixed(1),
+        y: GROUND - (f + 1) * FLOOR_H + 8,
+        lit,
+        live: lit ? hash(seed + f + b * 9) > 0.86 : r < 0.08,
+        style: {
+          "--d":
+            (2 + f * 0.17 + b * 0.05 + hash(seed + f * 3 + b) * 0.45).toFixed(
+              2,
+            ) + "s",
+          "--p": (9 + hash(seed + b + f * 2) * 6).toFixed(1) + "s",
+        },
+      });
+    }
+  }
+
+  return out;
+};
+
+const windows = [
+  ...buildWindows({
+    x0: 210,
+    w: 180,
+    floors: 8,
+    bays: 4,
+    seed: 3,
+    skip: (f, b) => f === 0 && (b === 1 || b === 2),
+  }),
+  ...buildWindows({ x0: 96, w: 114, floors: 3, bays: 2, seed: 11 }),
+  ...buildWindows({ x0: 390, w: 110, floors: 2, bays: 2, seed: 19 }),
+];
+
+const mullions = windows
+  .map((w) => `M${w.x + WIN_W / 2} ${w.y}v${WIN_H}`)
+  .join("");
+
+const slabs = Array.from({ length: 7 }, (_, i) => {
+  const y = GROUND - (i + 1) * FLOOR_H;
+
+  return `M204 ${y}H396`;
+}).join("");
+
+const tour = [
+  { k: "invest", o: "5.5s", label: { fa: "سرمایه‌گذاری", en: "Investment" } },
+  { k: "rent", o: "9.5s", label: { fa: "اجاره و رهن", en: "Rent & lease" } },
+  { k: "sale", o: "13.5s", label: { fa: "خرید و فروش", en: "Buy & sell" } },
+];
+
+const farSky = [
+  { x: 18, w: 44, h: 176 },
+  { x: 66, w: 36, h: 244 },
+  { x: 106, w: 50, h: 150 },
+  { x: 160, w: 40, h: 214 },
+  { x: 396, w: 40, h: 196 },
+  { x: 440, w: 34, h: 262 },
+  { x: 478, w: 48, h: 168 },
+  { x: 534, w: 38, h: 226 },
+  { x: 574, w: 30, h: 150 },
+];
+
+const nearSky = [
+  { x: 0, w: 58, h: 118 },
+  { x: 60, w: 34, h: 82 },
+  { x: 552, w: 48, h: 128 },
+];
 
 /* ---------- COUNTERS ---------- */
 
@@ -1548,7 +2101,7 @@ a {
   justify-content: center;
   gap: 8px;
   padding: 14px 28px;
-  border-radius: 12px;
+  border-radius: 8px;
   font-weight: 600;
   font-size: 14px;
   color: var(--btn-fg);
@@ -1587,7 +2140,7 @@ a {
 .btn-sm {
   padding: 9px 20px;
   font-size: 13px;
-  border-radius: 10px;
+  border-radius: 7px;
 }
 
 /* ============ LOTTIE LOADER ============ */
@@ -1726,7 +2279,7 @@ a {
   gap: 16px;
 
   border: 1px solid transparent;
-  border-radius: 18px;
+  border-radius: 12px;
 
   transition:
     width 0.45s var(--ease),
@@ -1760,109 +2313,58 @@ a {
 }
 
 .logo {
-  position: relative;
+  display: block;
   flex: 0 0 auto;
   width: 40px;
   height: 40px;
-  font-size: 10px;
-  border-radius: 12px;
-
-  background: linear-gradient(135deg, var(--gold-hi), var(--gold));
-
-  box-shadow: 0 6px 16px color-mix(in srgb, var(--gold) 40%, transparent);
-
-  animation: logoBob 4s ease-in-out infinite;
+  overflow: visible;
 }
 
-.logo i,
-.logo b,
-.logo s {
-  position: absolute;
-  display: block;
+.lg-bg {
+  fill: #14213d;
+  stroke: var(--line);
+  stroke-width: 1;
 }
 
-.lg-roof {
-  left: 0.5em;
-  top: 1em;
-  width: 3em;
-  height: 1.4em;
-
-  clip-path: polygon(50% 0, 100% 100%, 0 100%);
-
-  background: #14213d;
+.lg-l {
+  fill: none;
+  stroke: var(--gold-hi);
+  stroke-width: 1.4;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
 }
 
-.lg-chim {
-  left: 2.6em;
-  top: 0.6em;
-  width: 0.42em;
-  height: 0.9em;
-  border-radius: 0.1em 0.1em 0 0;
-  background: #14213d;
+.lg-w {
+  fill: var(--gold-hi);
+  opacity: 0.32;
+  transition: opacity 0.35s calc(var(--i, 0) * 45ms);
 }
 
-.lg-chim s {
-  left: -0.05em;
-  bottom: 100%;
-  width: 0.5em;
-  height: 0.5em;
-  border-radius: 50%;
-  background: rgba(20, 33, 61, 0.45);
-  animation: smokeSm 2.8s ease-out infinite;
+.lg-w.on,
+.brand:hover .lg-w,
+.brand:focus-visible .lg-w {
+  opacity: 1;
 }
 
-.lg-wall {
-  left: 0.8em;
-  top: 2.3em;
-  width: 2.4em;
-  height: 1.35em;
-  border-radius: 0.1em 0.1em 0.25em 0.25em;
-  background: #fffaf0;
-}
+@media (prefers-reduced-motion: no-preference) {
+  .shell.ready .lg-l {
+    stroke-dasharray: 1;
+    animation: arcDraw 1.1s 0.3s var(--ease) both;
+  }
 
-.lg-win {
-  top: 0.25em;
-  width: 0.5em;
-  height: 0.5em;
-  border-radius: 0.1em;
-  background: var(--gold-lo);
-
-  animation: twinkle 3s ease-in-out infinite;
-}
-
-.lg-win.a {
-  left: 0.25em;
-}
-
-.lg-win.b {
-  right: 0.25em;
-  animation-delay: 1.2s;
-}
-
-.lg-door {
-  bottom: 0;
-  left: 50%;
-  margin-left: -0.28em;
-  width: 0.56em;
-  height: 0.8em;
-  border-radius: 0.3em 0.3em 0 0;
-  background: #14213d;
-  animation: logoDoor 5s ease-in-out infinite;
-}
-
-.brand:hover .logo {
-  animation: logoHop 0.6s var(--ease);
+  .shell.ready .lg-w {
+    animation: arcFade 0.6s calc(1.1s + var(--i, 0) * 60ms) ease both;
+  }
 }
 
 .nav {
   position: relative;
   display: flex;
-  gap: 6px;
-  padding: 5px;
-  border-radius: 999px;
+  gap: 2px;
+  padding: 4px;
+  border-radius: 12px;
 
-  background: color-mix(in srgb, var(--panel) 70%, transparent);
-
+  background: color-mix(in srgb, var(--panel) 60%, transparent);
   border: 1px solid var(--soft);
 }
 
@@ -1870,10 +2372,10 @@ a {
   position: relative;
   z-index: 1;
   padding: 8px 18px;
-  border-radius: 999px;
+  border-radius: 8px;
   font-size: 13px;
   color: var(--text2);
-  transition: all 0.25s;
+  transition: color 0.25s;
 }
 
 .nav a:hover {
@@ -1881,21 +2383,18 @@ a {
 }
 
 .nav a.active {
-  color: #2a1c05;
+  color: var(--text);
   font-weight: 600;
 }
 
+/* active indicator: a thin gold rule that slides between links */
 .nav-pill {
   position: absolute;
   left: 0;
-  top: 5px;
-  bottom: 5px;
-
-  border-radius: 999px;
-
-  background: linear-gradient(135deg, var(--gold-hi), var(--gold));
-
-  box-shadow: 0 4px 14px color-mix(in srgb, var(--gold) 40%, transparent);
+  bottom: 3px;
+  height: 2px;
+  background: var(--gold);
+  clip-path: inset(0 16px);
 
   transition:
     transform 0.5s var(--ease),
@@ -1903,109 +2402,77 @@ a {
     opacity 0.3s;
 }
 
+/* theme switch: sun and moon icons, a thumb slides over the active one */
 .tsw {
   position: relative;
+  display: block;
   flex: 0 0 auto;
   width: 58px;
-  height: 30px;
+  height: 32px;
+  direction: ltr;
   border: 1px solid var(--line);
   border-radius: 99px;
-  overflow: hidden;
-
-  background: linear-gradient(180deg, #bfe0f2, #fbf5e4);
-
-  transition: background 0.5s;
-}
-
-.tsw::before {
-  content: "";
-  position: absolute;
-  bottom: 5px;
-  inset-inline-end: 9px;
-  width: 14px;
-  height: 6px;
-  border-radius: 9px;
-  background: #fff;
-
-  box-shadow: -6px -3px 0 -1px #fff;
+  background: var(--bg2);
 
   transition:
-    opacity 0.4s,
-    transform 0.5s var(--ease);
+    background 0.4s,
+    border-color 0.3s;
 }
 
-.tsw::after {
-  content: "";
+.tsw:hover {
+  border-color: var(--gold);
+}
+
+.ti {
   position: absolute;
+  z-index: 2;
   top: 7px;
-  inset-inline-start: 11px;
-  width: 2px;
-  height: 2px;
-  border-radius: 50%;
-  background: #fff;
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  pointer-events: none;
+  transition: color 0.35s;
+}
 
-  box-shadow:
-    8px 6px 0 #fff,
-    3px 12px 0 #fff,
-    15px 1px 0 #fff;
+.ti-sun {
+  left: 7px;
+  color: var(--gold-t);
+}
 
-  opacity: 0;
-
-  transition: opacity 0.4s;
+.ti-moon {
+  right: 7px;
+  color: var(--text3);
 }
 
 .tk {
   position: absolute;
+  z-index: 1;
   top: 3px;
-  inset-inline-start: 3px;
-  width: 22px;
-  height: 22px;
+  left: 3px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  box-shadow: 0 1px 4px rgba(20, 33, 61, 0.14);
 
-  background: radial-gradient(
-    circle at 35% 30%,
-    #fff8cf,
-    var(--gold-hi) 55%,
-    var(--gold)
-  );
-
-  box-shadow:
-    0 0 0 3px rgba(255, 220, 120, 0.3),
-    0 2px 8px rgba(0, 0, 0, 0.2);
-
-  transition:
-    inset-inline-start 0.5s var(--ease),
-    background 0.4s,
-    box-shadow 0.4s;
-}
-
-.tsw:hover .tk {
-  box-shadow:
-    0 0 0 5px rgba(255, 220, 120, 0.3),
-    0 2px 8px rgba(0, 0, 0, 0.2);
-}
-
-.theme-dark .tsw {
-  background: linear-gradient(180deg, #0f1a33, #26365f);
-}
-
-.theme-dark .tsw::before {
-  opacity: 0;
-  transform: translateY(6px);
-}
-
-.theme-dark .tsw::after {
-  opacity: 1;
+  transition: transform 0.45s var(--ease);
 }
 
 .theme-dark .tk {
-  inset-inline-start: 31px;
+  transform: translateX(26px);
+}
 
-  background: radial-gradient(circle at 65% 35%, #fffdf0, #e8dfb8 70%);
+.theme-dark .ti-sun {
+  color: var(--text3);
+}
 
-  box-shadow:
-    inset -4px -3px 0 rgba(150, 140, 100, 0.35),
-    0 0 0 3px rgba(255, 250, 220, 0.12);
+.theme-dark .ti-moon {
+  color: var(--gold-t);
 }
 
 .mpanel > * {
@@ -2037,20 +2504,23 @@ a {
 .chip {
   display: grid;
   place-items: center;
-  min-width: 38px;
-  height: 38px;
-  padding: 0 10px;
-  border-radius: 50%;
+  min-width: 36px;
+  height: 36px;
+  padding: 0 8px;
+  border-radius: 10px;
   border: 1px solid var(--line);
-  background: var(--panel);
+  background: transparent;
   font-size: 12px;
   font-weight: 600;
-  color: var(--gold-t);
-  transition: transform 0.25s var(--ease);
+  color: var(--text2);
+  transition:
+    border-color 0.25s,
+    color 0.25s;
 }
 
 .chip:hover {
-  transform: translateY(-2px) rotate(-6deg);
+  border-color: var(--gold);
+  color: var(--gold-t);
 }
 
 .burger {
@@ -2066,7 +2536,7 @@ a {
   width: 20px;
   height: 2px;
   border-radius: 2px;
-  background: var(--gold-t);
+  background: var(--text);
 
   transition:
     transform 0.3s var(--ease),
@@ -2109,7 +2579,7 @@ a {
   gap: 4px;
   padding: 14px;
 
-  border-radius: var(--r-lg);
+  border-radius: 14px;
 
   background: var(--panel);
   border: 1px solid var(--line);
@@ -2122,8 +2592,8 @@ a {
   display: flex;
   justify-content: space-between;
   padding: 16px 14px;
-  border-radius: 14px;
-  font-size: 18px;
+  border-radius: 8px;
+  font-size: 17px;
 }
 
 .mpanel a:not(.btn):hover {
@@ -2136,6 +2606,19 @@ a {
 
 .mpanel .btn {
   margin-top: 8px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .shell.ready .header-in {
+    animation: hdrIn 0.9s 0.1s var(--ease) both;
+  }
+}
+
+@keyframes hdrIn {
+  from {
+    opacity: 0;
+    transform: translateY(-14px);
+  }
 }
 
 /* ============ HERO ============ */
@@ -2172,10 +2655,10 @@ a {
 .hero h1 {
   margin: 20px 0 22px;
   font-family: var(--font-d);
-  font-size: clamp(40px, 4.8vw, 64px);
-  line-height: 1.12;
-  letter-spacing: -0.02em;
-  font-weight: 700;
+  font-size: clamp(38px, 4.4vw, 58px);
+  line-height: 1.14;
+  letter-spacing: -0.015em;
+  font-weight: 600;
   color: var(--text);
 }
 
@@ -2185,6 +2668,10 @@ a {
   font-weight: 800;
   letter-spacing: -0.02em;
   line-height: 1.32;
+}
+
+.lang-fa .hero h1 {
+  font-weight: 700;
 }
 
 .grad {
@@ -2213,7 +2700,7 @@ a {
   margin-top: 40px;
 
   border: 1px solid var(--line);
-  border-radius: 14px;
+  border-radius: 6px;
   background: var(--panel);
   overflow: hidden;
 }
@@ -2242,1058 +2729,536 @@ a {
   color: var(--text3);
 }
 
-/* --- ART --- */
+/* --- ART: architectural elevation --- */
 
 .art-wrap {
-  container-type: inline-size;
   width: 100%;
   max-width: 600px;
   margin-inline: auto;
 }
 
 .art {
+  --a-ink: #14213d;
+  --a-paper: #fbf8f0;
+  --a-paper2: #ece5d2;
+  --a-glass: #3a4c74;
+  --a-lit: #efd58f;
+  --a-mull: rgba(20, 33, 61, 0.6);
+  --a-grid: rgba(20, 33, 61, 0.09);
+  --a-far: #cdd9e6;
+  --a-far-line: #c3d0df;
+  --a-near: #b9c7d9;
+  --a-near-line: #adbcd0;
+  --a-ground: #e9e3d2;
+  --a-ground2: #f4f0e4;
+  --a-tree: #6f8f76;
+  --a-cloud: rgba(255, 255, 255, 0.85);
+
   position: relative;
-  width: 40em;
-  height: 36em;
-  font-size: calc(100cqw / 40);
+  width: 100%;
+  aspect-ratio: 600 / 540;
 }
 
-.art > *,
-.sky > *,
-.house-wrap > *,
-.house > *,
-.wall > *,
-.doorway > *,
-.room > *,
-.tree > *,
-.bush > *,
-.key > *,
-.chimney > *,
-.fig > i,
-.sign > *,
-.board > *,
-.pot > i,
-.road > i,
-.car > i {
-  position: absolute;
+.theme-dark .art {
+  --a-ink: #e9d9a8;
+  --a-paper: #1a2846;
+  --a-paper2: #131e38;
+  --a-glass: #0a1122;
+  --a-lit: #ffdc85;
+  --a-mull: rgba(8, 14, 28, 0.85);
+  --a-grid: rgba(233, 217, 168, 0.07);
+  --a-far: #101a30;
+  --a-far-line: #14203a;
+  --a-near: #0c1527;
+  --a-near-line: #101b31;
+  --a-ground: #0c1427;
+  --a-ground2: #0a1121;
+  --a-tree: #1f4a44;
+  --a-cloud: rgba(120, 140, 190, 0.3);
 }
 
-.sky {
-  inset: 1em 2em 2em;
-  border-radius: 3em;
+.arc {
+  display: block;
+  width: 100%;
+  height: 100%;
   overflow: hidden;
-
-  background: linear-gradient(180deg, var(--sky-a), var(--sky-b) 78%);
-
-  border: 1px solid var(--line);
+  border-radius: 10px;
+  direction: ltr;
   box-shadow: var(--shadow);
 }
 
-.orb {
-  top: 3em;
-  inset-inline-end: 5em;
-  width: 4.6em;
-  height: 4.6em;
-  border-radius: 50%;
-
-  background: radial-gradient(
-    circle at 35% 30%,
-    #fff8cf,
-    var(--gold-hi) 55%,
-    var(--gold)
-  );
-
-  box-shadow:
-    0 0 0 1em color-mix(in srgb, var(--gold-hi) 25%, transparent),
-    0 0 3em color-mix(in srgb, var(--gold-hi) 55%, transparent);
-
-  animation: floaty 7s ease-in-out infinite;
+.arc-panel {
+  fill: url(#arc-sky);
+  stroke: var(--line);
+  stroke-width: 1;
 }
 
-[data-theme="dark"] .orb {
-  background: radial-gradient(circle at 65% 35%, #fffdf0, #f0e6c0 60%, #cbbf90);
-
-  box-shadow:
-    0 0 0 1em rgba(255, 250, 220, 0.07),
-    0 0 3em rgba(255, 244, 200, 0.3);
+.arc .line,
+.arc .line-thin,
+.arc .crown,
+.arc .ground,
+.arc .dim path,
+.arc .mullion,
+.arc .paving {
+  fill: none;
+  stroke-linecap: butt;
+  stroke-linejoin: miter;
 }
 
-.star {
-  color: var(--star);
-  font-size: 1.4em;
-  opacity: 0;
-  animation: twinkle 3s ease-in-out infinite;
+.arc .line {
+  stroke: var(--a-ink);
+  stroke-width: 1.5;
 }
 
-[data-theme="light"] .star {
-  display: none;
-}
-
-.s1 {
-  top: 4em;
-  left: 5em;
-}
-
-.s2 {
-  top: 9em;
-  left: 11em;
-  animation-delay: 0.9s;
-}
-
-.s3 {
-  top: 3em;
-  left: 15em;
-  animation-delay: 1.7s;
-}
-
-.cloud {
-  height: 2.4em;
-  border-radius: 99px;
-  background: var(--cloud);
-  opacity: 0.92;
-}
-
-.cloud::before,
-.cloud::after {
-  content: "";
-  position: absolute;
-  border-radius: 50%;
-  background: inherit;
-}
-
-.cloud::before {
-  width: 1.7em;
-  height: 1.7em;
-  top: -0.9em;
-  left: 0.8em;
-}
-
-.cloud::after {
-  width: 2.3em;
-  height: 2.3em;
-  top: -1.2em;
-  left: 2.3em;
-}
-
-.c1 {
-  top: 9em;
-  inset-inline-start: 3em;
-  width: 6em;
-
-  animation: drift 14s ease-in-out infinite alternate;
-}
-
-.c2 {
-  top: 14em;
-  inset-inline-end: 2.5em;
-  width: 5em;
-
-  animation: drift 11s ease-in-out infinite alternate-reverse;
-}
-
-.hill {
-  border-radius: 50%;
-}
-
-.hl-a {
-  left: -8em;
-  bottom: -9em;
-  width: 32em;
-  height: 15em;
-  background: var(--hill-b);
-}
-
-.hl-b {
-  right: -9em;
-  bottom: -10em;
-  width: 34em;
-  height: 15em;
-  background: var(--hill-a);
-}
-
-.tree {
-  left: 3em;
-  bottom: 5em;
-  width: 5em;
-  height: 9em;
-  z-index: 2;
-
-  transform-origin: bottom center;
-
-  animation: sway 4s ease-in-out infinite alternate;
-}
-
-.tree i {
-  bottom: 0;
-  left: 2em;
-  width: 1em;
-  height: 3.4em;
-  border-radius: 0.5em;
-  background: var(--gold-lo);
-}
-
-.tree b {
-  top: 0;
-  left: 0;
-  width: 5em;
-  height: 5.6em;
-  border-radius: 50%;
-
-  background: radial-gradient(circle at 35% 30%, var(--tree), var(--tree-d));
-}
-
-.bush {
-  left: 6.4em;
-  bottom: 4em;
-  width: 5em;
-  height: 2.6em;
-  z-index: 2;
-}
-
-.bush i {
-  bottom: 0;
-  width: 2.8em;
-  height: 2.4em;
-  border-radius: 50%;
-  background: var(--tree-d);
-}
-
-.bush i:first-child {
-  left: 0;
-}
-
-.bush i:last-child {
-  left: 1.8em;
-  background: var(--tree);
-}
-
-.shadow {
-  left: 50%;
-  bottom: 2.4em;
-  width: 24em;
-  height: 3em;
-  margin-left: -12em;
-  border-radius: 50%;
-
-  background: radial-gradient(ellipse, var(--ground), transparent 70%);
-}
-
-/* --- HOUSE --- */
-
-.house-wrap {
-  left: 50%;
-  bottom: 4em;
-  width: 18em;
-  height: 18em;
-  margin-left: -9em;
-  z-index: 3;
-}
-
-.house {
-  inset: 0;
-
-  transform-origin: bottom center;
-
-  animation: houseHop 7s ease-in-out infinite;
-}
-
-.roof {
-  top: 1em;
-  left: -1.6em;
-  width: 21.2em;
-  height: 7.6em;
-  z-index: 2;
-
-  clip-path: polygon(50% 0, 100% 100%, 0 100%);
-
-  background: linear-gradient(150deg, var(--roof-a), var(--roof-b));
-}
-
-.attic {
-  top: 4.3em;
-  left: 50%;
-  margin-left: -0.9em;
-  width: 1.8em;
-  height: 1.8em;
-  z-index: 4;
-  border-radius: 50%;
-  background: var(--win);
-  border: 0.22em solid var(--roof-b);
-
-  box-shadow: 0 0 1em var(--win-glow);
-}
-
-.chimney {
-  top: 1.4em;
-  inset-inline-end: 2.4em;
-  width: 2em;
-  height: 4.4em;
-  z-index: 1;
-  border-radius: 0.3em 0.3em 0 0;
-
-  background: linear-gradient(var(--roof-b), var(--gold-lo));
-}
-
-.chimney s {
-  left: 0.3em;
-  bottom: 100%;
-  width: 1.4em;
-  height: 1.4em;
-  border-radius: 50%;
-  background: var(--cloud);
-  opacity: 0;
-
-  animation: smoke 3.8s ease-out infinite;
-}
-
-.chimney s:nth-child(2) {
-  animation-delay: 1.3s;
-}
-
-.chimney s:nth-child(3) {
-  animation-delay: 2.6s;
-}
-
-.wall {
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 10em;
-  z-index: 3;
-
-  border-radius: 0.5em 0.5em 1em 1em;
-
-  background: var(--wall);
-  border: 0.18em solid var(--wall-line);
-
-  box-shadow: inset 0 -1em 1.4em rgba(0, 0, 0, 0.05);
-}
-
-.win {
-  top: 2em;
-  width: 3.6em;
-  height: 3.8em;
-  border-radius: 0.4em;
-  border: 0.25em solid var(--wall-line);
-
-  box-shadow: 0 0 1.4em var(--win-glow);
-
-  background:
-    linear-gradient(
-      90deg,
-      transparent calc(50% - 0.1em),
-      var(--wall-line) 0,
-      var(--wall-line) calc(50% + 0.1em),
-      transparent 0
-    ),
-    linear-gradient(
-      transparent calc(50% - 0.1em),
-      var(--wall-line) 0,
-      var(--wall-line) calc(50% + 0.1em),
-      transparent 0
-    ),
-    var(--win);
-}
-
-.w1 {
-  left: 2.2em;
-}
-
-.w2 {
-  right: 2.2em;
-}
-
-.win {
-  animation: winPulse 7s ease-in-out infinite;
-}
-
-.doorway {
-  bottom: 0;
-  left: 50%;
-  width: 4.8em;
-  height: 6.4em;
-  margin-left: -2.4em;
-  border-radius: 2.4em 2.4em 0 0;
-  perspective: 36em;
-
-  box-shadow: 0 0 0 0.3em var(--wall-line);
-}
-
-.room {
-  inset: 0;
-  border-radius: 2.4em 2.4em 0 0;
-  overflow: hidden;
-  background: #2a2113;
-}
-
-.glow {
-  inset: 0;
-
-  background: radial-gradient(
-    ellipse at 50% 100%,
-    #fff3b8,
-    var(--gold-hi) 55%,
-    var(--gold)
-  );
-
-  opacity: 0;
-
-  animation: doorLight 7s ease-in-out infinite;
-}
-
-.fig {
-  bottom: 0;
-  width: 1.5em;
-  height: 4em;
-
-  transform: translateY(110%);
-
-  animation: figIn 7s ease-in-out infinite;
-
-  --c: var(--mint);
-}
-
-.fig i {
-  top: 0;
-  left: 0.15em;
-  width: 1.2em;
-  height: 1.2em;
-  border-radius: 50%;
-  background: #f4c9a0;
-}
-
-.fig::after {
-  content: "";
-  position: absolute;
-  top: 1.15em;
-  left: 0;
-  width: 100%;
-  height: 2.85em;
-  border-radius: 0.75em 0.75em 0 0;
-  background: var(--c);
-}
-
-.f1 {
-  left: 0.5em;
-}
-
-.f2 {
-  left: 1.9em;
-  --c: #e5684f;
-  animation-delay: 0.1s;
-}
-
-.f3 {
-  right: 0.5em;
-  font-size: 0.78em;
-  --c: var(--gold-hi);
-  animation-delay: 0.2s;
-}
-
-.door {
-  inset: 0;
-  border-radius: 2.4em 2.4em 0 0;
-
-  background: linear-gradient(180deg, var(--door), var(--door-d));
-
-  transform-origin: left center;
-
-  animation: doorOpen 7s ease-in-out infinite;
-
-  box-shadow: inset 0 0 0 0.3em rgba(255, 255, 255, 0.1);
-}
-
-.door::before {
-  content: "";
-  position: absolute;
-  inset: 1em 0.9em 45% 0.9em;
-  border: 1px solid rgba(255, 255, 255, 0.28);
-
-  border-radius: 1.3em 1.3em 0 0;
-}
-
-.door i {
-  right: 0.7em;
-  top: 55%;
-  width: 0.6em;
-  height: 0.6em;
-  border-radius: 50%;
-  background: #fff3c4;
-}
-
-.sp {
-  z-index: 9;
-  left: 50%;
-  font-size: 1.6em;
-  color: var(--gold-hi);
-  opacity: 0;
-
-  animation: sparkle 7s ease-out infinite;
-
-  filter: drop-shadow(0 0 0.4em var(--gold));
-}
-
-.sp1 {
-  bottom: 9em;
-  margin-left: -6em;
-}
-
-.sp2 {
-  bottom: 12em;
-  margin-left: 4em;
-  animation-delay: 0.08s;
-}
-
-.sp3 {
-  bottom: 5em;
-  margin-left: 5em;
-  animation-delay: 0.16s;
-}
-
-.sp4 {
-  bottom: 11em;
-  margin-left: -3em;
-  animation-delay: 0.24s;
-}
-
-/* --- UPGRADES --- */
-
-.orb::before {
-  content: "";
-  position: absolute;
-  inset: -2.6em;
-  border-radius: 50%;
-
-  background: repeating-conic-gradient(
-    color-mix(in srgb, var(--gold-hi) 45%, transparent) 0 5deg,
-    transparent 5deg 22deg
-  );
-
-  -webkit-mask: radial-gradient(
-    circle,
-    transparent 42%,
-    #000 44%,
-    transparent 74%
-  );
-
-  mask: radial-gradient(circle, transparent 42%, #000 44%, transparent 74%);
-
-  animation: spin 40s linear infinite;
-}
-
-[data-theme="dark"] .orb::before {
-  display: none;
-}
-
-.bird {
-  top: 6em;
-  left: -3em;
-  width: 1.8em;
-  height: 0.7em;
-  color: var(--text2);
+.arc .line-thin {
+  stroke: var(--a-ink);
+  stroke-width: 1;
   opacity: 0.7;
-
-  animation: fly 18s linear infinite;
 }
 
-.bird::before,
-.bird::after {
-  content: "";
+.arc .crown {
+  stroke: var(--gold);
+  stroke-width: 2.5;
+}
+
+.arc .ground {
+  stroke: var(--a-ink);
+  stroke-width: 1.6;
+}
+
+.arc .paving {
+  stroke: var(--a-ink);
+  stroke-width: 0.6;
+  opacity: 0.12;
+}
+
+.arc .mullion {
+  stroke: var(--a-mull);
+  stroke-width: 1;
+}
+
+.arc .glass rect {
+  fill: var(--a-glass);
+}
+
+.arc .lit {
+  fill: var(--a-lit);
+  opacity: 0;
+}
+
+.arc .lit.on {
+  opacity: 0.9;
+}
+
+.arc .cypress ellipse {
+  fill: var(--a-tree);
+}
+
+.arc .dim path {
+  stroke: var(--gold);
+  stroke-width: 0.9;
+}
+
+.arc .dim text {
+  fill: var(--gold-t);
+  font:
+    500 10px/1 ui-monospace,
+    "SF Mono",
+    Menlo,
+    Consolas,
+    monospace;
+  letter-spacing: 0.04em;
+}
+
+.arc .ring-o,
+.arc .ring-i {
+  fill: none;
+  stroke: var(--gold);
+  stroke-width: 0.9;
+}
+
+.arc .ring-o {
+  opacity: 0.4;
+}
+
+.arc .disc {
+  fill: var(--gold-hi);
+  opacity: 0.32;
+}
+
+.arc .cloud {
+  fill: var(--a-cloud);
+}
+
+.arc .glint {
+  opacity: 0;
+}
+
+.arc .px {
+  translate: 0 0;
+  transition: translate 0.7s var(--ease);
+}
+
+.arc .px-far {
+  translate: calc(var(--mx, 0) * -9px) calc(var(--my, 0) * -3px);
+}
+
+.arc .px-near {
+  translate: calc(var(--mx, 0) * -5px) calc(var(--my, 0) * -2px);
+}
+
+.arc .px-mid {
+  translate: calc(var(--mx, 0) * -1.5px) 0;
+}
+
+/* sun <-> moon */
+
+.arc .orb {
+  transition:
+    transform 1.3s var(--ease),
+    opacity 0.9s ease;
+}
+
+.arc .orb.moon {
+  opacity: 0;
+  transform: translateY(96px);
+}
+
+.theme-dark .arc .orb.sun {
+  opacity: 0;
+  transform: translateY(96px);
+}
+
+.theme-dark .arc .orb.moon {
+  opacity: 1;
+  transform: none;
+}
+
+.arc .moon-body {
+  fill: var(--a-ink);
+  opacity: 0.85;
+}
+
+.arc .haze {
+  pointer-events: none;
+}
+
+.theme-dark .arc .haze {
+  opacity: 0.5;
+}
+
+.arc .glare {
+  translate: calc(var(--mx, 0) * 70px) calc(var(--my, 0) * 40px);
+  transition: translate 0.7s var(--ease);
+  pointer-events: none;
+}
+
+/* service tour: one part of the building at a time */
+
+.arc .tour > g {
+  opacity: 0;
+}
+
+.arc .hl {
+  fill: color-mix(in srgb, var(--gold) 9%, transparent);
+  stroke: var(--gold);
+  stroke-width: 1.4;
+}
+
+.arc .ld {
+  fill: none;
+  stroke: var(--gold);
+  stroke-width: 1;
+}
+
+.arc .dot {
+  fill: var(--gold);
+}
+
+.tag {
   position: absolute;
-  bottom: 0;
-  width: 0.95em;
-  height: 0.55em;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
 
-  border-top: 0.16em solid currentColor;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--text);
 
-  border-radius: 50% 50% 0 0;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--panel) 90%, transparent);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+
+  opacity: 0;
+  pointer-events: none;
 }
 
-.bird::before {
-  left: 0;
-  transform-origin: right bottom;
-
-  animation: flapL 0.6s ease-in-out infinite alternate;
+.tag i {
+  width: 6px;
+  height: 6px;
+  background: var(--gold);
+  transform: rotate(45deg);
 }
 
-.bird::after {
-  right: 0;
-  transform-origin: left bottom;
-
-  animation: flapR 0.6s ease-in-out infinite alternate;
+.tg0 {
+  left: 28.67%;
+  top: 36.3%;
+  translate: -100% -50%;
 }
 
-.b2 {
-  top: 11em;
-  scale: 0.7;
-  animation-duration: 25s;
-  animation-delay: -10s;
+.tg1 {
+  left: 18%;
+  top: 49.6%;
+  translate: -50% -100%;
 }
 
-.sign {
-  right: 1.4em;
-  bottom: 4.6em;
-  width: 7.4em;
-  height: 8em;
-  z-index: 4;
-  perspective: 30em;
+.tg2 {
+  left: 74.17%;
+  top: 58.9%;
+  translate: -50% -100%;
 }
 
-.post {
-  left: 50%;
-  bottom: 0;
-  width: 0.45em;
-  height: 5.6em;
-  margin-left: -0.22em;
-  border-radius: 0.2em;
-  background: var(--gold-lo);
+@media (max-width: 640px) {
+  .tag {
+    display: none;
+  }
 }
 
-.board {
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 3em;
+/* title block */
 
-  transform-style: preserve-3d;
+.tblock {
+  position: absolute;
+  inset-inline-start: 4.5%;
+  bottom: 5%;
 
-  animation: signFlip 7s ease-in-out infinite;
+  display: flex;
+  align-items: stretch;
+  gap: 12px;
+  padding: 11px 18px 11px 14px;
 
-  filter: drop-shadow(0 0.3em 0.4em rgba(0, 0, 0, 0.18));
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--panel) 86%, transparent);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
-.face {
-  inset: 0;
+.tb-mark {
+  width: 2px;
+  background: var(--gold);
+}
+
+.tblock p {
   display: grid;
-  place-items: center;
-  border-radius: 0.5em;
-  font-size: 1.15em;
-  font-weight: 700;
-
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
+  gap: 3px;
+  margin: 0;
 }
 
-.front {
-  background: var(--wall);
-  border: 0.18em solid var(--wall-line);
-
+.tblock b {
+  font-size: 13px;
+  font-weight: 600;
   color: var(--text);
 }
 
-.back {
-  background: linear-gradient(135deg, var(--gold-hi), var(--gold));
-
-  color: #2a1c05;
-
-  transform: rotateY(180deg);
-}
-
-.cf {
-  z-index: 9;
-  left: 50%;
-  bottom: 8em;
-  width: 0.6em;
-  height: 1em;
-  border-radius: 0.15em;
-  background: var(--c);
-  opacity: 0;
-
-  animation: confetti 7s ease-out infinite;
-}
-
-.hl-a {
-  translate: calc(var(--mx, 0) * 0.6em) 0;
-}
-
-.hl-b {
-  translate: calc(var(--mx, 0) * -0.4em) 0;
-}
-
-.orb {
-  translate: calc(var(--mx, 0) * -0.9em) calc(var(--my, 0) * -0.4em);
-}
-
-.cloud {
-  translate: calc(var(--mx, 0) * 1.3em) 0;
-}
-
-.tree,
-.bush,
-.sign {
-  translate: calc(var(--mx, 0) * 0.5em) 0;
-}
-
-.house-wrap,
-.key,
-.shadow {
-  translate: calc(var(--mx, 0) * 0.25em) calc(var(--my, 0) * 0.15em);
-}
-
-.hl-a,
-.hl-b,
-.orb,
-.cloud,
-.tree,
-.bush,
-.sign,
-.house-wrap,
-.key,
-.shadow {
-  transition: translate 0.9s var(--ease);
-}
-
-/* ROAD */
-
-.road {
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 2.6em;
-  z-index: 1;
-  background: var(--road);
-}
-
-.road i {
-  left: 0;
-  right: 0;
-  top: 50%;
-  height: 0.2em;
-
-  background: repeating-linear-gradient(
-    90deg,
-    #fff 0 1.4em,
-    transparent 1.4em 2.8em
-  );
-
-  opacity: 0.65;
-
-  animation: dash 1s linear infinite;
-}
-
-.car {
-  left: -7em;
-  bottom: 0.3em;
-  width: 5.4em;
-  height: 2.4em;
-  z-index: 2;
-
-  animation:
-    drive 16s linear infinite,
-    bob 0.45s ease-in-out infinite alternate;
-
-  filter: drop-shadow(0 0.3em 0.3em rgba(0, 0, 0, 0.3));
-}
-
-.car::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0.5em;
-  height: 1.15em;
-  border-radius: 0.6em;
-
-  background: linear-gradient(var(--gold-hi), var(--gold));
-
-  box-shadow:
-    inset -0.3em 0 0 rgba(255, 90, 60, 0.55),
-    inset 0.3em 0 0 rgba(255, 255, 255, 0.5);
-}
-
-.car::after {
-  content: "";
-  position: absolute;
-  left: 1.1em;
-  width: 2.9em;
-  bottom: 1.55em;
-  height: 0.85em;
-  border-radius: 0.8em 0.9em 0 0;
-
-  background: var(--win);
-
-  border: 0.15em solid var(--gold-lo);
-
-  border-bottom: 0;
-}
-
-.cw {
-  bottom: 0;
-  width: 1em;
-  height: 1em;
-  border-radius: 50%;
-  background: #1b1f2a;
-  border: 0.2em solid #cfd3dc;
-
-  animation: spin 0.5s linear infinite;
-}
-
-.cw::after {
-  content: "";
-  position: absolute;
-  inset: 0.15em 0.3em;
-  background: #cfd3dc;
-}
-
-.c-a {
-  left: 0.7em;
-}
-
-.c-b {
-  right: 0.7em;
-}
-
-.pot {
-  bottom: 0;
-  width: 1.7em;
-  height: 1.3em;
-}
-
-.pot::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-
-  clip-path: polygon(6% 0, 94% 0, 80% 100%, 20% 100%);
-
-  background: #cf7d45;
-}
-
-.pot i {
-  left: 0.1em;
-  bottom: 1.1em;
-  width: 1.5em;
-  height: 1.3em;
-  border-radius: 50%;
-
-  transform-origin: bottom center;
-
-  animation: sway 3s ease-in-out infinite alternate;
-
-  background:
-    radial-gradient(circle at 28% 38%, #ff8fa3 0 0.33em, transparent 0.34em),
-    radial-gradient(circle at 72% 28%, #ffd166 0 0.33em, transparent 0.34em),
-    radial-gradient(circle at 55% 78%, #ff6f91 0 0.3em, transparent 0.31em),
-    var(--tree);
-}
-
-.p1 {
-  left: 3.6em;
-}
-
-.p2 {
-  right: 3.6em;
-}
-
-.p2 i {
-  animation-delay: -1.4s;
-}
-
-.lamp {
-  bottom: 4.9em;
-  width: 0.7em;
-  height: 1em;
-  border-radius: 0.2em 0.2em 0.45em 0.45em;
-
-  background: var(--win);
-
-  border: 0.12em solid var(--wall-line);
-
-  box-shadow: 0 0 0.6em var(--win-glow);
-
-  animation: lampOn 7s ease-in-out infinite;
-}
-
-.l1 {
-  left: 5.2em;
-}
-
-.l2 {
-  right: 5.2em;
-}
-
-.shoot {
-  top: 4em;
-  left: 22em;
-  width: 6em;
-  height: 0.15em;
-  border-radius: 1em;
-
-  background: linear-gradient(90deg, transparent, #fff);
-
-  opacity: 0;
-  rotate: -25deg;
-
-  animation: shoot 9s ease-out infinite;
-}
-
-[data-theme="light"] .shoot {
-  display: none;
-}
-
-.key::before {
-  content: "";
-  position: absolute;
-  left: -0.9em;
-  top: -0.9em;
-  width: 4.4em;
-  height: 4.4em;
-  border-radius: 50%;
-
-  background: radial-gradient(
-    circle,
-    color-mix(in srgb, var(--gold-hi) 55%, transparent),
-    transparent 65%
-  );
-
-  animation: halo 1.4s ease-in-out infinite alternate;
-}
-
-.shell.ready .house-wrap {
-  animation: houseIn 1.1s 0.3s var(--ease) both;
-}
-
-.shell.ready .sign {
-  animation: signIn 0.9s 0.9s var(--ease) both;
-}
-
-/* KEY */
-
-.key {
-  z-index: 10;
-  left: 50%;
-  bottom: 6.3em;
-  width: 6.4em;
-  height: 2.6em;
-  margin-left: -12em;
-
-  transform-origin: 90% 50%;
-
-  animation: keyTrip 7s var(--ease) infinite;
-
-  filter: drop-shadow(0 0.5em 0.5em rgba(0, 0, 0, 0.25));
-}
-
-.key i {
-  display: block;
-}
-
-.bow {
-  left: 0;
-  top: 0;
-  width: 2.6em;
-  height: 2.6em;
-  border-radius: 50%;
-
-  background: radial-gradient(circle at 35% 30%, var(--gold-hi), var(--gold));
-
-  border: 0.3em solid var(--gold-lo);
-}
-
-.bow::after {
-  content: "";
-  position: absolute;
-  inset: 0.55em;
-  border-radius: 50%;
-  background: var(--bg);
-}
-
-.shaft {
-  left: 2.3em;
-  top: 1.05em;
-  width: 3.6em;
-  height: 0.55em;
-  border-radius: 0.3em;
-
-  background: linear-gradient(var(--gold-hi), var(--gold-lo));
-}
-
-.teeth {
-  right: 0.4em;
-  top: 1.05em;
-  width: 0.7em;
-  height: 1.4em;
-  border-radius: 0 0 0.2em 0.2em;
-
-  background: var(--gold-lo);
-
-  box-shadow: -1em 0 0 -0.05em var(--gold-lo);
-}
-
-/* FLOATING LABELS */
-
-.badge {
-  z-index: 12;
-  top: 0.2em;
-  inset-inline-start: 0.5em;
-
-  padding: 0.7em 1.2em;
-
-  border: 1px solid var(--line);
-  border-radius: 10px;
-
-  background: color-mix(in srgb, var(--panel) 90%, transparent);
-
-  backdrop-filter: blur(10px);
-
-  color: var(--gold-t);
-  font-size: 1.15em;
-  font-weight: 600;
-
-  animation: floaty 6s ease-in-out infinite;
-}
-
-.mini-card {
-  z-index: 12;
-  bottom: 0.3em;
-  inset-inline-end: 0.5em;
-
-  display: flex;
-  align-items: center;
-  gap: 0.9em;
-
-  padding: 0.9em 1.3em;
-
-  border: 1px solid var(--line);
-  border-radius: 14px;
-
-  background: color-mix(in srgb, var(--panel) 92%, transparent);
-
-  backdrop-filter: blur(10px);
-
-  box-shadow: var(--shadow);
-
-  animation: floaty 7s ease-in-out 1s infinite;
-}
-
-.mini-card > span {
-  display: grid;
-  place-items: center;
-  width: 2.6em;
-  height: 2.6em;
-  border-radius: 0.8em;
-
-  color: #2a1c05;
-
-  background: linear-gradient(135deg, var(--gold-hi), var(--gold));
-
-  font-size: 1.5em;
-}
-
-.mini-card p {
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-}
-
-.mini-card small {
-  font-size: 1em;
+.tblock small {
+  font-size: 11.5px;
   color: var(--text3);
 }
 
-.mini-card b {
-  font-size: 1.25em;
-  color: var(--text);
+/* motion: one orchestrated build-up after the loader */
+
+@media (prefers-reduced-motion: no-preference) {
+  .shell.ready .arc .draw {
+    stroke-dasharray: 1;
+    animation: arcDraw var(--t, 1.2s) var(--d, 0s) var(--ease) both;
+  }
+
+  .shell.ready .arc .rise {
+    transform-box: fill-box;
+    transform-origin: 50% 100%;
+    animation: arcRise var(--t, 1.2s) var(--d, 0s) var(--ease) both;
+  }
+
+  .shell.ready .arc .fade {
+    animation: arcFade 0.9s var(--d, 0s) ease both;
+  }
+
+  .shell.ready .arc .arc-sun {
+    animation: arcSun 2.2s 0.9s var(--ease) both;
+  }
+
+  .shell.ready .arc .arc-gridfill {
+    animation: arcFade 1.4s ease both;
+  }
+
+  .shell.ready .arc .lit.on {
+    animation: arcWinOn 1.1s var(--d, 2s) ease both;
+  }
+
+  .shell.ready .arc .lit.live {
+    animation:
+      arcWinOn 1.1s var(--d, 2s) ease both,
+      arcLive var(--p, 11s) calc(var(--d, 2s) + 5s) ease-in-out infinite;
+  }
+
+  .shell.ready .arc .lit.live-on {
+    animation: arcLiveOn var(--p, 11s) calc(var(--d, 2s) + 5s) ease-in-out
+      infinite;
+  }
+
+  .shell.ready .arc .glint {
+    animation: arcGlint 12s 5.2s ease-in-out infinite;
+  }
+
+  .shell.ready .arc .cloud {
+    animation: arcCloud 46s ease-in-out infinite alternate;
+  }
+
+  .shell.ready .arc .cl2 {
+    animation-duration: 58s;
+  }
+
+  .shell.ready .arc .cl3 {
+    animation-duration: 52s;
+    animation-direction: alternate-reverse;
+  }
+
+  .shell.ready .arc .tour > g,
+  .shell.ready .tag {
+    animation: arcTour 12s var(--o, 5.5s) ease infinite both;
+  }
+
+  .shell.ready .tblock {
+    animation: arcTitle 0.9s 3.1s var(--ease) both;
+  }
+}
+
+@keyframes heroIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+@keyframes arcDraw {
+  from {
+    stroke-dashoffset: 1;
+  }
+
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes arcTour {
+  0% {
+    opacity: 0;
+  }
+
+  6%,
+  29% {
+    opacity: 1;
+  }
+
+  35%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes arcRise {
+  from {
+    transform: scaleY(0);
+  }
+}
+
+@keyframes arcFade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes arcSun {
+  from {
+    opacity: 0;
+    transform: translateY(44px);
+  }
+}
+
+@keyframes arcWinOn {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes arcLive {
+  0%,
+  54%,
+  100% {
+    opacity: 0.9;
+  }
+
+  62%,
+  86% {
+    opacity: 0.08;
+  }
+}
+
+@keyframes arcLiveOn {
+  0%,
+  48%,
+  100% {
+    opacity: 0;
+  }
+
+  58%,
+  84% {
+    opacity: 0.9;
+  }
+}
+
+@keyframes arcGlint {
+  0%,
+  100% {
+    opacity: 0;
+    transform: skewX(-14deg) translateX(-120px);
+  }
+
+  4% {
+    opacity: 0.55;
+  }
+
+  22% {
+    opacity: 0.55;
+    transform: skewX(-14deg) translateX(280px);
+  }
+
+  26% {
+    opacity: 0;
+    transform: skewX(-14deg) translateX(280px);
+  }
+}
+
+@keyframes arcCloud {
+  from {
+    transform: translateX(-24px);
+  }
+
+  to {
+    transform: translateX(24px);
+  }
+}
+
+@keyframes arcTitle {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
 }
 
 /* ============ SECTIONS ============ */
@@ -3688,460 +3653,27 @@ h2 em {
   opacity: 0;
 }
 
-.shell.ready .hero-copy {
-  animation: slideIn 0.8s var(--ease) both;
+.shell.ready .hero-copy > * {
+  animation: heroIn 0.9s var(--ease) both;
 }
 
-.shell.ready .art-wrap {
-  animation: popIn 0.9s 0.1s var(--ease) both;
+.shell.ready .hero-copy > :nth-child(2) {
+  animation-delay: 0.08s;
+}
+
+.shell.ready .hero-copy > :nth-child(3) {
+  animation-delay: 0.16s;
+}
+
+.shell.ready .hero-copy > :nth-child(4) {
+  animation-delay: 0.24s;
+}
+
+.shell.ready .hero-copy > :nth-child(5) {
+  animation-delay: 0.32s;
 }
 
 /* ============ KEYFRAMES ============ */
-
-@keyframes twinkle {
-  0%,
-  100% {
-    opacity: 0.35;
-  }
-
-  50% {
-    opacity: 1;
-  }
-}
-
-@keyframes floaty {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-
-  50% {
-    transform: translateY(-0.6em);
-  }
-}
-
-@keyframes drift {
-  from {
-    transform: translateX(-1.5em);
-  }
-
-  to {
-    transform: translateX(1.5em);
-  }
-}
-
-@keyframes sway {
-  from {
-    transform: rotate(-2deg);
-  }
-
-  to {
-    transform: rotate(2deg);
-  }
-}
-
-@keyframes houseHop {
-  0%,
-  54%,
-  72%,
-  100% {
-    transform: none;
-  }
-
-  58% {
-    transform: scale(1.015, 0.985);
-  }
-
-  62% {
-    transform: translateY(-0.5em);
-  }
-
-  66% {
-    transform: scale(0.99, 1.01);
-  }
-}
-
-@keyframes smoke {
-  0% {
-    opacity: 0;
-    transform: translateY(0) scale(0.4);
-  }
-
-  25% {
-    opacity: 0.8;
-  }
-
-  100% {
-    opacity: 0;
-
-    transform: translateY(-4.5em) translateX(1em) scale(1.7);
-  }
-}
-
-@keyframes doorOpen {
-  0%,
-  60%,
-  92%,
-  100% {
-    transform: rotateY(0);
-  }
-
-  70%,
-  86% {
-    transform: rotateY(-80deg);
-  }
-}
-
-@keyframes doorLight {
-  0%,
-  60%,
-  92%,
-  100% {
-    opacity: 0;
-  }
-
-  70%,
-  86% {
-    opacity: 1;
-  }
-}
-
-@keyframes figIn {
-  0%,
-  68%,
-  92%,
-  100% {
-    transform: translateY(110%);
-  }
-
-  76%,
-  83%,
-  88% {
-    transform: translateY(0);
-  }
-
-  80%,
-  85% {
-    transform: translateY(-0.3em);
-  }
-}
-
-@keyframes sparkle {
-  0%,
-  58% {
-    opacity: 0;
-
-    transform: scale(0.2) rotate(0);
-  }
-
-  64% {
-    opacity: 1;
-
-    transform: scale(1.3) rotate(90deg);
-  }
-
-  80%,
-  100% {
-    opacity: 0;
-
-    transform: scale(0.3) rotate(200deg);
-  }
-}
-
-@keyframes keyTrip {
-  0% {
-    transform: translate(18em, -16em) rotate(30deg) scale(0.6);
-
-    opacity: 0;
-  }
-
-  8% {
-    opacity: 1;
-  }
-
-  22% {
-    transform: translate(10em, -9em) rotate(-8deg) scale(1);
-  }
-
-  38% {
-    transform: translate(1em, -0.6em) rotate(0);
-  }
-
-  46%,
-  52% {
-    transform: translate(4.6em, 0) rotate(0);
-  }
-
-  57% {
-    transform: translate(4.6em, 0) rotate(-45deg);
-  }
-
-  62%,
-  74% {
-    transform: translate(4.6em, 0) rotate(0);
-
-    opacity: 1;
-  }
-
-  90%,
-  100% {
-    transform: translate(18em, -16em) rotate(30deg) scale(0.6);
-
-    opacity: 0;
-  }
-}
-
-@keyframes signFlip {
-  0%,
-  62% {
-    transform: rotateY(0);
-  }
-
-  72%,
-  92% {
-    transform: rotateY(180deg);
-  }
-
-  100% {
-    transform: rotateY(360deg);
-  }
-}
-
-@keyframes confetti {
-  0%,
-  62% {
-    opacity: 0;
-
-    transform: translate(0, 0) rotate(0);
-  }
-
-  66% {
-    opacity: 1;
-  }
-
-  76% {
-    opacity: 1;
-
-    transform: translate(var(--x), var(--y)) rotate(var(--r));
-  }
-
-  92%,
-  100% {
-    opacity: 0;
-
-    transform: translate(calc(var(--x) * 1.15), calc(var(--y) + 10em))
-      rotate(calc(var(--r) * 1.6));
-  }
-}
-
-@keyframes fly {
-  0% {
-    transform: translate(0, 0);
-  }
-
-  25% {
-    transform: translate(11em, -1.4em);
-  }
-
-  50% {
-    transform: translate(23em, 0.6em);
-  }
-
-  75% {
-    transform: translate(34em, -0.9em);
-  }
-
-  100% {
-    transform: translate(42em, 0);
-  }
-}
-
-@keyframes flapL {
-  from {
-    transform: rotate(20deg);
-  }
-
-  to {
-    transform: rotate(-16deg);
-  }
-}
-
-@keyframes flapR {
-  from {
-    transform: rotate(-20deg);
-  }
-
-  to {
-    transform: rotate(16deg);
-  }
-}
-
-@keyframes winPulse {
-  0%,
-  56%,
-  94%,
-  100% {
-    filter: none;
-  }
-
-  66%,
-  88% {
-    filter: brightness(1.15);
-
-    box-shadow: 0 0 2.6em var(--win-glow);
-  }
-}
-
-@keyframes logoBob {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-
-  50% {
-    transform: translateY(-2px);
-  }
-}
-
-@keyframes logoHop {
-  0% {
-    transform: none;
-  }
-
-  35% {
-    transform: translateY(-5px) scale(1.06, 0.94);
-  }
-
-  60% {
-    transform: scale(0.96, 1.05);
-  }
-
-  100% {
-    transform: none;
-  }
-}
-
-@keyframes logoDoor {
-  0%,
-  68%,
-  100% {
-    background: #14213d;
-  }
-
-  76%,
-  92% {
-    background: #fff3c4;
-  }
-}
-
-@keyframes smokeSm {
-  0% {
-    opacity: 0;
-
-    transform: translateY(0) scale(0.4);
-  }
-
-  30% {
-    opacity: 0.8;
-  }
-
-  100% {
-    opacity: 0;
-
-    transform: translateY(-1.6em) translateX(0.4em) scale(1.5);
-  }
-}
-
-@keyframes dash {
-  to {
-    background-position-x: 2.8em;
-  }
-}
-
-@keyframes drive {
-  from {
-    transform: translateX(0);
-  }
-
-  to {
-    transform: translateX(50em);
-  }
-}
-
-@keyframes bob {
-  from {
-    translate: 0 0;
-  }
-
-  to {
-    translate: 0 -0.12em;
-  }
-}
-
-@keyframes lampOn {
-  0%,
-  60%,
-  94%,
-  100% {
-    filter: none;
-
-    box-shadow: 0 0 0.6em var(--win-glow);
-  }
-
-  70%,
-  88% {
-    filter: brightness(1.25);
-
-    box-shadow: 0 0 1.8em 0.4em var(--win-glow);
-  }
-}
-
-@keyframes shoot {
-  0%,
-  78% {
-    opacity: 0;
-    transform: translateX(0);
-  }
-
-  80% {
-    opacity: 1;
-  }
-
-  90%,
-  100% {
-    opacity: 0;
-
-    transform: translateX(-16em);
-  }
-}
-
-@keyframes halo {
-  from {
-    opacity: 0.5;
-    transform: scale(0.9);
-  }
-
-  to {
-    opacity: 1;
-    transform: scale(1.15);
-  }
-}
-
-@keyframes houseIn {
-  from {
-    opacity: 0;
-
-    transform: translateY(3em) scale(0.92);
-  }
-}
-
-@keyframes signIn {
-  from {
-    opacity: 0;
-
-    transform: translateY(-2.5em);
-  }
-}
 
 @keyframes mdoor {
   0%,
@@ -4236,33 +3768,11 @@ h2 em {
   }
 }
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 @keyframes dropIn {
   from {
     transform: translateY(-14px) scale(0.97);
 
     opacity: 0;
-  }
-}
-
-@keyframes slideIn {
-  from {
-    opacity: 0;
-
-    transform: translateY(22px);
-  }
-}
-
-@keyframes popIn {
-  from {
-    opacity: 0;
-
-    transform: scale(0.94) translateY(16px);
   }
 }
 
@@ -4443,38 +3953,6 @@ h2 em {
   .reveal {
     opacity: 1;
     transform: none;
-  }
-
-  .door {
-    transform: rotateY(-80deg);
-  }
-
-  .glow {
-    opacity: 1;
-  }
-
-  .fig {
-    transform: none;
-  }
-
-  .key {
-    opacity: 0;
-  }
-
-  .star {
-    opacity: 0.8;
-  }
-
-  .board {
-    transform: none;
-  }
-
-  .logo {
-    animation: none;
-  }
-
-  .car {
-    display: none;
   }
 
   .mflag {
