@@ -33,7 +33,14 @@
     <!-- HEADER -->
     <header class="header">
       <div class="container header-in">
-        <a class="brand" href="#about" @click="closeMenu">
+        <a
+          class="brand"
+          href="#about"
+          @click="
+            closeMenu();
+            goTo('about');
+          "
+        >
           <svg
             class="logo"
             viewBox="0 0 40 40"
@@ -71,7 +78,7 @@
             :href="`#${n.id}`"
             :class="{ active: activeSection === n.id }"
             :aria-current="activeSection === n.id ? 'true' : undefined"
-            @click="activeSection = n.id"
+            @click="goTo(n.id)"
           >
             {{ n.label[language] }}
           </a>
@@ -140,7 +147,10 @@
             v-for="n in navItems"
             :key="n.id"
             :href="`#${n.id}`"
-            @click="closeMenu"
+            @click="
+              closeMenu();
+              goTo(n.id);
+            "
           >
             {{ n.label[language] }}
             <span>↗</span>
@@ -171,15 +181,32 @@
             <span class="eyebrow">{{ t("hero.eyebrow") }}</span>
 
             <h1>
-              <span class="ln" style="--l: 0"
-                ><span
-                  >{{ t("hero.line1") }}
-                  <span class="grad">{{ t("hero.line2") }}</span></span
-                ></span
-              >
-              <span class="ln" style="--l: 1"
-                ><span>{{ t("hero.line3") }} {{ t("hero.line4") }}</span></span
-              >
+              <template v-if="language === 'fa'">
+                <span class="ln" style="--l: 0"
+                  ><span
+                    >{{ t("hero.line1") }}
+                    <span class="grad">{{ t("hero.line2") }}</span></span
+                  ></span
+                >
+                <span class="ln" style="--l: 1"
+                  ><span
+                    >{{ t("hero.line3") }} {{ t("hero.line4") }}</span
+                  ></span
+                >
+              </template>
+              <template v-else>
+                <span class="ln" style="--l: 0"
+                  ><span
+                    >{{ t("hero.line1") }} {{ t("hero.line2") }}
+                    {{ t("hero.line3") }}</span
+                  ></span
+                >
+                <span class="ln" style="--l: 1"
+                  ><span
+                    ><span class="grad">{{ t("hero.line4") }}</span></span
+                  ></span
+                >
+              </template>
             </h1>
 
             <p class="lead">{{ t("hero.description") }}</p>
@@ -359,6 +386,58 @@
                       mask="url(#arc-moon-mask)"
                     />
                   </g>
+                </g>
+
+                <g class="stars">
+                  <circle
+                    class="star"
+                    style="--s: 0s"
+                    cx="74"
+                    cy="44"
+                    r="1.2"
+                  />
+                  <circle
+                    class="star"
+                    style="--s: 1.4s"
+                    cx="150"
+                    cy="66"
+                    r="0.9"
+                  />
+                  <circle
+                    class="star"
+                    style="--s: 2.6s"
+                    cx="226"
+                    cy="38"
+                    r="1.3"
+                  />
+                  <circle
+                    class="star"
+                    style="--s: 0.8s"
+                    cx="330"
+                    cy="88"
+                    r="0.9"
+                  />
+                  <circle
+                    class="star"
+                    style="--s: 3.1s"
+                    cx="372"
+                    cy="46"
+                    r="1.1"
+                  />
+                  <circle
+                    class="star"
+                    style="--s: 2s"
+                    cx="548"
+                    cy="72"
+                    r="0.9"
+                  />
+                  <circle
+                    class="star"
+                    style="--s: 3.6s"
+                    cx="30"
+                    cy="112"
+                    r="1"
+                  />
                 </g>
 
                 <!-- clouds -->
@@ -678,6 +757,9 @@
                     </g>
                   </g>
 
+                  <g clip-path="url(#arc-tower-clip)">
+                    <path class="cshadow" d="M150 142H262L222 430H110Z" />
+                  </g>
                   <!-- service tour -->
                   <g class="tour">
                     <g class="ti0" :style="{ '--o': tour[0].o }">
@@ -803,8 +885,8 @@
                   <small>
                     {{
                       language === "fa"
-                        ? "املاک صدف · تهران"
-                        : "Sadaf Estate · Tehran"
+                        ? "املاک صدف · کرمانشاه"
+                        : "Sadaf Estate · Kermanshah"
                     }}
                   </small>
                 </p>
@@ -1259,7 +1341,7 @@ const offices = [
   {
     k: 1,
     label: "headquarters",
-    name: "tehran",
+    name: "kermanshah",
     addr: "address1",
     phone: "phone1",
     raw: "+982122345678",
@@ -1267,7 +1349,7 @@ const offices = [
   {
     k: 2,
     label: "branch",
-    name: "tehranBranch",
+    name: "kermanshahBranch",
     addr: "address2",
     phone: "phone2",
     raw: "+982122678901",
@@ -1347,7 +1429,7 @@ const translations = {
         line3: "for your next move.",
       },
       description:
-        "With years of experience in the Tehran housing market, we are your trusted partner in property transactions — precise market knowledge, transparent pricing and expert consultation.",
+        "With years of experience in the kermanshah housing market, we are your trusted partner in property transactions — precise market knowledge, transparent pricing and expert consultation.",
     },
 
     services: {
@@ -1361,7 +1443,7 @@ const translations = {
         line2: "that delivers.",
       },
       description:
-        "Deep knowledge of Tehran's neighborhoods and property types means the right solution for your purchase, sale or investment.",
+        "Deep knowledge of kermanshah's neighborhoods and property types means the right solution for your purchase, sale or investment.",
       tags: {
         Residential: "Residential",
         Commercial: "Commercial",
@@ -1393,10 +1475,11 @@ const translations = {
       },
       headquarters: "Main office",
       branch: "Branch",
-      tehran: "Tehran office",
-      tehranBranch: "Sadaf branch",
-      address1: "Tehran, Saadat Abad, Darya Blvd., Motahari St., No. 12",
-      address2: "Tehran, Zafaraniyeh, Moghaddas Ardabili St., No. 45, Floor 2",
+      kermanshah: "kermanshah office",
+      kermanshahBranch: "Sadaf branch",
+      address1: "kermanshah, Saadat Abad, Darya Blvd., Motahari St., No. 12",
+      address2:
+        "kermanshah, Zafaraniyeh, Moghaddas Ardabili St., No. 45, Floor 2",
       phone1: "+98-21-22345678",
       phone2: "+98-21-22678901",
     },
@@ -1450,7 +1533,7 @@ const translations = {
         line3: "برای معامله بعدی شما.",
       },
       description:
-        "مشاورین املاک صدف با سال‌ها تجربه در بازار مسکن تهران، همراه مطمئن شما در معاملات ملکی است. ما با شناخت دقیق بازار، قیمت‌گذاری شفاف و مشاوره تخصصی، بهترین گزینه‌ها را پیشنهاد می‌دهیم.",
+        "مشاورین املاک صدف با سال‌ها تجربه در بازار مسکن کرمانشاه، همراه مطمئن شما در معاملات ملکی است. ما با شناخت دقیق بازار، قیمت‌گذاری شفاف و مشاوره تخصصی، بهترین گزینه‌ها را پیشنهاد می‌دهیم.",
     },
 
     services: {
@@ -1464,7 +1547,7 @@ const translations = {
         line2: "که نتیجه می‌دهد.",
       },
       description:
-        "با شناخت دقیق مناطق مختلف تهران و تخصص در انواع ملک، راهکار مناسب برای خرید، فروش یا سرمایه‌گذاری شما ارائه می‌کنیم.",
+        "با شناخت دقیق مناطق مختلف کرمانشاه و تخصص در انواع ملک، راهکار مناسب برای خرید، فروش یا سرمایه‌گذاری شما ارائه می‌کنیم.",
       tags: {
         Residential: "مسکونی",
         Commercial: "تجاری",
@@ -1496,10 +1579,10 @@ const translations = {
       },
       headquarters: "دفتر مرکزی",
       branch: "شعبه",
-      tehran: "دفتر تهران",
-      tehranBranch: "شعبه صدف",
-      address1: "تهران، سعادت‌آباد، بلوار دریا، خیابان مطهری، پلاک ۱۲",
-      address2: "تهران، زعفرانیه، خیابان مقدس اردبیلی، پلاک ۴۵، طبقه ۲",
+      kermanshah: "دفتر کرمانشاه",
+      kermanshahBranch: "شعبه صدف",
+      address1: "کرمانشاه، سعادت‌آباد، بلوار دریا، خیابان مطهری، پلاک ۱۲",
+      address2: "کرمانشاه، زعفرانیه، خیابان مقدس اردبیلی، پلاک ۴۵، طبقه ۲",
       phone1: "۰۲۱-۲۲۳۴۵۶۷۸",
       phone2: "۰۲۱-۲۲۶۷۸۹۰۱",
     },
@@ -1580,8 +1663,8 @@ const updateSeo = () => {
     : "Sadaf Estate | Specialized Real Estate Consulting";
 
   const desc = fa
-    ? "مشاورین املاک صدف با سال‌ها تجربه در بازار مسکن تهران، خدمات مشاوره خرید، فروش، اجاره، کارشناسی و سرمایه‌گذاری املاک ارائه می‌دهند."
-    : "Sadaf Real Estate Consultants: buying, selling, renting, valuation and investment in the Tehran housing market.";
+    ? "مشاورین املاک صدف با سال‌ها تجربه در بازار مسکن کرمانشاه، خدمات مشاوره خرید، فروش، اجاره، کارشناسی و سرمایه‌گذاری املاک ارائه می‌دهند."
+    : "Sadaf Real Estate Consultants: buying, selling, renting, valuation and investment in the kermanshah housing market.";
 
   setMeta("description", desc);
   setMeta("og:title", document.title);
@@ -1614,10 +1697,10 @@ const updateSeo = () => {
         url,
         image: img,
         description: desc,
-        areaServed: { "@type": "City", name: "Tehran" },
+        areaServed: { "@type": "City", name: "kermanshah" },
         address: {
           "@type": "PostalAddress",
-          addressLocality: "Tehran",
+          addressLocality: "kermanshah",
           addressCountry: "IR",
         },
       },
@@ -1933,6 +2016,27 @@ const observe = () => {
 
 /* ---------- MOUNT ---------- */
 
+/* while a nav click is smooth-scrolling, ignore the section observer so the
+   indicator goes straight to the target instead of hopping through sections */
+let navLock = false;
+let lockTimer;
+
+const goTo = (id) => {
+  activeSection.value = id;
+  navLock = true;
+
+  clearTimeout(lockTimer);
+
+  const release = () => {
+    navLock = false;
+    clearTimeout(lockTimer);
+    window.removeEventListener("scrollend", release);
+  };
+
+  window.addEventListener("scrollend", release, { once: true });
+  lockTimer = setTimeout(release, 1500);
+};
+
 const onKey = (e) => {
   if (e.key === "Escape") closeMenu();
 };
@@ -1962,6 +2066,8 @@ onMounted(async () => {
 
   const onScroll = () => {
     scrolled.value = window.scrollY > 18;
+
+    if (!navLock && window.scrollY < 120) activeSection.value = "about";
 
     const h = document.documentElement;
 
@@ -1995,7 +2101,7 @@ onMounted(async () => {
         .filter((e) => e.isIntersecting)
         .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
 
-      if (v) {
+      if (v && !navLock) {
         activeSection.value = v.target.id === "about-2" ? "about" : v.target.id;
       }
     },
@@ -2044,6 +2150,7 @@ onBeforeUnmount(() => {
   window.removeEventListener("keydown", onKey);
 
   clearInterval(tagTimer);
+  clearTimeout(lockTimer);
 
   revealIO?.disconnect();
   sectionIO?.disconnect();
@@ -2550,7 +2657,6 @@ a {
 
 .nav a.active {
   color: var(--text);
-  font-weight: 600;
 }
 
 /* active indicator: a thin gold rule that slides between links */
@@ -4728,6 +4834,88 @@ h2 em {
       0 10px 26px var(--btn-shadow),
       0 0 0 16px transparent;
   }
+}
+
+/* ============ REFINEMENT 5: brand line on small screens, night sky, cloud shadow ============ */
+
+.hero .grad {
+  white-space: nowrap;
+}
+.brand span {
+  white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+  .hero h1 {
+    font-size: clamp(31px, 8.6vw, 38px);
+  }
+
+  /* Persian: keep "با مشاورین املاک صدف" on one line, the rest on the second */
+  .lang-fa .hero h1 {
+    font-size: clamp(22px, calc((100vw - 32px) / 12.6), 38px);
+  }
+  .lang-fa .hero h1 .ln:first-child > span {
+    white-space: nowrap;
+  }
+}
+
+.arc .stars {
+  display: none;
+}
+[data-theme="dark"] .arc .stars {
+  display: block;
+}
+.arc .star {
+  fill: var(--star, #ffe28a);
+  opacity: 0.3;
+}
+.arc .cshadow {
+  fill: #14213d;
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .shell.ready .arc .star {
+    animation: twinkle 6s var(--s, 0s) ease-in-out infinite alternate;
+  }
+  .shell.ready .arc .cshadow {
+    animation: cloudShade 38s 4s ease-in-out infinite;
+  }
+}
+
+@keyframes twinkle {
+  from {
+    opacity: 0.15;
+  }
+  to {
+    opacity: 0.9;
+  }
+}
+@keyframes cloudShade {
+  0% {
+    opacity: 0;
+    transform: translateX(-120px);
+  }
+  18%,
+  72% {
+    opacity: 0.075;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(340px);
+  }
+}
+
+/* ============ REFINEMENT 6: CTA panel (soft gold, no corner spots) ============ */
+
+.cta {
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--gold) 9%, var(--panel)) 0%,
+    color-mix(in srgb, var(--gold) 3%, var(--panel)) 55%,
+    var(--panel) 100%
+  );
 }
 
 /* ============ REDUCED MOTION ============ */
