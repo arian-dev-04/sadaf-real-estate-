@@ -9,6 +9,10 @@
     :dir="dir"
     :lang="language"
   >
+    <a class="skip" href="#main">{{
+      language === "fa" ? "پرش به محتوای اصلی" : "Skip to content"
+    }}</a>
+
     <!-- LOADER: Lottie buildings -->
     <Transition name="fade">
       <div v-if="loading" class="loader" role="status" aria-live="polite">
@@ -75,7 +79,7 @@
 
         <div class="actions">
           <button
-            class="chip"
+            class="chip desk-lang"
             type="button"
             :aria-label="language === 'en' ? 'فارسی' : 'English'"
             @click="toggleLanguage"
@@ -112,6 +116,7 @@
             type="button"
             :aria-expanded="menuOpen"
             aria-label="Menu"
+            aria-controls="mobile-menu"
             @click="menuOpen = !menuOpen"
           >
             <span /><span />
@@ -122,7 +127,14 @@
 
     <!-- MOBILE MENU -->
     <Transition name="fade">
-      <div v-if="menuOpen" class="mmenu" @click.self="closeMenu">
+      <div
+        v-if="menuOpen"
+        id="mobile-menu"
+        class="mmenu"
+        role="dialog"
+        aria-modal="true"
+        @click.self="closeMenu"
+      >
         <div class="mpanel">
           <a
             v-for="n in navItems"
@@ -134,6 +146,11 @@
             <span>↗</span>
           </a>
 
+          <button class="mlang" type="button" @click="toggleLanguage">
+            <span>{{ language === "en" ? "فارسی" : "English" }}</span>
+            <b>{{ language === "en" ? "FA" : "EN" }}</b>
+          </button>
+
           <a class="btn" href="#contact" @click="closeMenu">
             {{ t("header.talk") }}
           </a>
@@ -141,7 +158,7 @@
       </div>
     </Transition>
 
-    <main>
+    <main id="main">
       <!-- HERO -->
       <section
         id="about"
@@ -154,10 +171,15 @@
             <span class="eyebrow">{{ t("hero.eyebrow") }}</span>
 
             <h1>
-              {{ t("hero.line1") }}
-              <span class="grad">{{ t("hero.line2") }}</span
-              ><br />
-              {{ t("hero.line3") }} {{ t("hero.line4") }}
+              <span class="ln" style="--l: 0"
+                ><span
+                  >{{ t("hero.line1") }}
+                  <span class="grad">{{ t("hero.line2") }}</span></span
+                ></span
+              >
+              <span class="ln" style="--l: 1"
+                ><span>{{ t("hero.line3") }} {{ t("hero.line4") }}</span></span
+              >
             </h1>
 
             <p class="lead">{{ t("hero.description") }}</p>
@@ -261,6 +283,23 @@
                       stop-opacity="0"
                     />
                   </linearGradient>
+                  <linearGradient id="arc-mist" x1="0" x2="1" y1="0" y2="0">
+                    <stop
+                      offset="0"
+                      style="stop-color: var(--a-cloud, #fff)"
+                      stop-opacity="0"
+                    />
+                    <stop
+                      offset="0.5"
+                      style="stop-color: var(--a-cloud, #fff)"
+                      stop-opacity="0.75"
+                    />
+                    <stop
+                      offset="1"
+                      style="stop-color: var(--a-cloud, #fff)"
+                      stop-opacity="0"
+                    />
+                  </linearGradient>
                   <linearGradient id="arc-glint" x1="0" x2="1" y1="0" y2="0">
                     <stop offset="0" stop-color="#fff" stop-opacity="0" />
                     <stop offset="0.5" stop-color="#fff" stop-opacity="0.5" />
@@ -350,6 +389,12 @@
                   />
                 </g>
 
+                <g class="birds">
+                  <path class="bird b1" d="M0 0q5 -5 10 0q5 -5 10 0" />
+                  <path class="bird b2" d="M0 0q4 -4 8 0q4 -4 8 0" />
+                  <path class="bird b3" d="M0 0q3 -3 6 0q3 -3 6 0" />
+                </g>
+
                 <!-- skyline (parallax) -->
                 <g class="px px-far">
                   <rect
@@ -377,6 +422,16 @@
                     fill="url(#arc-near)"
                   />
                 </g>
+
+                <rect
+                  class="mist"
+                  x="0"
+                  y="366"
+                  width="380"
+                  height="72"
+                  rx="36"
+                  fill="url(#arc-mist)"
+                />
 
                 <rect
                   class="haze"
@@ -427,6 +482,10 @@
                   style="--d: 2.2s"
                   d="M0 452H600M0 476H600M0 506H600"
                 />
+
+                <g class="fade" style="--d: 2.6s">
+                  <path class="cast" d="M210 430H390L520 472H340Z" />
+                </g>
 
                 <!-- building -->
                 <g class="px px-mid">
@@ -692,7 +751,6 @@
                     ry="30"
                   />
                 </g>
-
                 <!-- dimension -->
                 <g class="dim">
                   <path
@@ -754,6 +812,12 @@
             </div>
           </div>
         </div>
+        <a
+          class="scroll-cue"
+          href="#about-2"
+          :aria-label="language === 'fa' ? 'ادامه' : 'Scroll'"
+          ><i
+        /></a>
       </section>
 
       <!-- ABOUT -->
@@ -809,7 +873,11 @@
               {{ t("expertise.description") }}
             </p>
 
-            <div class="tags">
+            <div
+              class="tags"
+              @mouseenter="tagsPaused = true"
+              @mouseleave="tagsPaused = false"
+            >
               <span
                 v-for="tag in tags"
                 :key="tag"
@@ -1151,7 +1219,12 @@ const tags = [
   "Legal",
 ];
 
-const activeTags = ["Residential", "Luxury", "Investment"];
+const tagShift = ref(0);
+const tagsPaused = ref(false);
+const activeTags = computed(() =>
+  [0, 2, 3].map((i) => tags[(i + tagShift.value) % tags.length]),
+);
+let tagTimer;
 
 const stats = [
   {
@@ -1458,7 +1531,7 @@ const t = (path) =>
 /* ---------- HELPERS ---------- */
 
 const setMeta = (name, content) => {
-  const attr = /^(og|twitter):/.test(name) ? "property" : "name";
+  const attr = /^og:/.test(name) ? "property" : "name";
 
   let el = document.head.querySelector(`meta[${attr}="${name}"]`);
 
@@ -1469,6 +1542,31 @@ const setMeta = (name, content) => {
   }
 
   el.setAttribute("content", content);
+};
+
+const setLink = (rel, href) => {
+  let el = document.head.querySelector(`link[rel="${rel}"]`);
+
+  if (!el) {
+    el = document.createElement("link");
+    el.setAttribute("rel", rel);
+    document.head.appendChild(el);
+  }
+
+  el.setAttribute("href", href);
+};
+
+const setJsonLd = (data) => {
+  let el = document.getElementById("ld-json");
+
+  if (!el) {
+    el = document.createElement("script");
+    el.id = "ld-json";
+    el.type = "application/ld+json";
+    document.head.appendChild(el);
+  }
+
+  el.textContent = JSON.stringify(data);
 };
 
 const updateSeo = () => {
@@ -1489,6 +1587,49 @@ const updateSeo = () => {
   setMeta("og:title", document.title);
   setMeta("og:description", desc);
   setMeta("og:locale", fa ? "fa_IR" : "en_US");
+
+  const url = location.origin + location.pathname;
+  const img = `${location.origin}/og-cover.jpg`;
+  const name = fa ? "املاک صدف" : "Sadaf Estate";
+
+  setMeta("robots", "index, follow, max-image-preview:large, max-snippet:-1");
+  setMeta("og:type", "website");
+  setMeta("og:site_name", name);
+  setMeta("og:url", url);
+  setMeta("og:image", img);
+  setMeta("og:image:alt", name);
+  setMeta("twitter:card", "summary_large_image");
+  setMeta("twitter:title", document.title);
+  setMeta("twitter:description", desc);
+  setMeta("twitter:image", img);
+  setLink("canonical", url);
+
+  setJsonLd({
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "RealEstateAgent",
+        "@id": `${url}#org`,
+        name,
+        url,
+        image: img,
+        description: desc,
+        areaServed: { "@type": "City", name: "Tehran" },
+        address: {
+          "@type": "PostalAddress",
+          addressLocality: "Tehran",
+          addressCountry: "IR",
+        },
+      },
+      {
+        "@type": "WebSite",
+        "@id": `${url}#site`,
+        url,
+        name,
+        inLanguage: fa ? "fa-IR" : "en",
+      },
+    ],
+  });
 };
 
 const applyTheme = () => {
@@ -1792,6 +1933,10 @@ const observe = () => {
 
 /* ---------- MOUNT ---------- */
 
+const onKey = (e) => {
+  if (e.key === "Escape") closeMenu();
+};
+
 onMounted(async () => {
   try {
     const l = localStorage.getItem("sadaf-language");
@@ -1823,6 +1968,11 @@ onMounted(async () => {
     h.style.setProperty(
       "--sp",
       (h.scrollTop / (h.scrollHeight - h.clientHeight || 1)).toFixed(4),
+    );
+
+    h.style.setProperty(
+      "--hs",
+      Math.min(window.scrollY / (window.innerHeight * 0.9), 1).toFixed(3),
     );
   };
 
@@ -1869,6 +2019,16 @@ onMounted(async () => {
 
   window.addEventListener("resize", updatePill);
 
+  window.addEventListener("keydown", onKey);
+
+  if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    tagTimer = setInterval(() => {
+      if (!document.hidden && !tagsPaused.value) {
+        tagShift.value = (tagShift.value + 1) % tags.length;
+      }
+    }, 2600);
+  }
+
   document.fonts?.ready.then(updatePill);
 
   nextTick(updatePill);
@@ -1880,6 +2040,10 @@ onBeforeUnmount(() => {
   window.removeEventListener("scroll", window._sadafScroll);
 
   window.removeEventListener("resize", updatePill);
+
+  window.removeEventListener("keydown", onKey);
+
+  clearInterval(tagTimer);
 
   revealIO?.disconnect();
   sectionIO?.disconnect();
@@ -2246,8 +2410,28 @@ a {
   position: fixed;
   z-index: 1000;
   inset: 0 0 auto;
-  padding: 18px 0;
-  transition: padding 0.35s var(--ease);
+  padding: 12px 0;
+  background: transparent;
+}
+
+.header::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0;
+  background: color-mix(in srgb, var(--panel) 84%, transparent);
+  backdrop-filter: blur(18px) saturate(1.4);
+  -webkit-backdrop-filter: blur(18px) saturate(1.4);
+  border-bottom: 1px solid var(--soft);
+  box-shadow: 0 10px 34px rgba(20, 33, 61, 0.08);
+  transition: opacity 0.45s var(--ease);
+}
+
+.scrolled .header::after,
+.menu .header::after {
+  opacity: 1;
 }
 
 .header::before {
@@ -2268,11 +2452,8 @@ a {
   transform-origin: right;
 }
 
-.scrolled .header {
-  padding: 10px 0;
-}
-
 .header-in {
+  min-height: 52px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -2287,21 +2468,6 @@ a {
     background 0.35s,
     border-color 0.35s,
     box-shadow 0.35s;
-}
-
-.scrolled .header-in {
-  width: min(100% - 32px, 1060px);
-
-  padding: 8px 12px;
-
-  background: color-mix(in srgb, var(--panel) 78%, transparent);
-
-  backdrop-filter: blur(18px) saturate(1.4);
-
-  -webkit-backdrop-filter: blur(18px) saturate(1.4);
-
-  border-color: var(--soft);
-  box-shadow: var(--shadow);
 }
 
 .brand {
@@ -2572,7 +2738,7 @@ a {
 
 .mpanel {
   position: absolute;
-  inset: 78px 16px auto;
+  inset: 84px 16px auto;
 
   display: flex;
   flex-direction: column;
@@ -3628,11 +3794,11 @@ h2 em {
 
 .reveal {
   opacity: 0;
-  transform: translateY(18px);
+  transform: translateY(28px) scale(0.985);
 
   transition:
-    opacity 0.7s,
-    transform 0.7s var(--ease);
+    opacity 0.9s var(--ease),
+    transform 0.9s var(--ease);
 }
 
 .reveal.in {
@@ -3933,6 +4099,634 @@ h2 em {
   .to-top {
     inset-inline-end: 16px;
     bottom: 16px;
+  }
+}
+
+/* ============ UPGRADE: header, menu, hero ============ */
+
+@property --mx {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+@property --my {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+
+:where(a, button):focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+}
+
+.skip {
+  position: fixed;
+  z-index: 2000;
+  inset-block-start: 8px;
+  inset-inline-start: 8px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  font-weight: 600;
+  transform: translateY(-160%);
+  transition: transform 0.25s var(--ease);
+}
+
+.skip:focus-visible {
+  transform: none;
+}
+
+.burger::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+}
+
+.mlang {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 6px;
+  padding: 14px;
+  border: 0;
+  border-top: 1px solid var(--soft);
+  border-radius: 0 0 8px 8px;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 17px;
+  cursor: pointer;
+}
+
+.mlang b {
+  display: grid;
+  place-items: center;
+  min-width: 36px;
+  height: 32px;
+  padding: 0 8px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  font-size: 12px;
+  color: var(--gold-t);
+}
+
+.mlang:hover {
+  background: color-mix(in srgb, var(--gold) 12%, transparent);
+}
+
+.mpanel > * {
+  animation: mIn 0.55s var(--ease) both;
+}
+.mpanel > :nth-child(2) {
+  animation-delay: 0.05s;
+}
+.mpanel > :nth-child(3) {
+  animation-delay: 0.1s;
+}
+.mpanel > :nth-child(4) {
+  animation-delay: 0.15s;
+}
+.mpanel > :nth-child(5) {
+  animation-delay: 0.2s;
+}
+.mpanel > :nth-child(6) {
+  animation-delay: 0.25s;
+}
+.mpanel > :nth-child(7) {
+  animation-delay: 0.3s;
+}
+
+@keyframes mIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+@media (max-width: 1024px) {
+  .desk-lang {
+    display: none;
+  }
+}
+
+/* hero: pointer-follow light, smoothed parallax */
+.hero {
+  position: relative;
+  isolation: isolate;
+  transition:
+    --mx 0.8s var(--ease),
+    --my 0.8s var(--ease);
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(
+    560px circle at calc(72% + var(--mx) * 7%) calc(44% + var(--my) * 9%),
+    color-mix(in srgb, var(--gold) 5%, transparent),
+    transparent 70%
+  );
+}
+
+.lang-fa .hero::before {
+  background: radial-gradient(
+    560px circle at calc(28% + var(--mx) * 7%) calc(44% + var(--my) * 9%),
+    color-mix(in srgb, var(--gold) 5%, transparent),
+    transparent 70%
+  );
+}
+
+.shell.ready .hero::before {
+  animation: auroraIn 2.2s 0.4s ease forwards;
+}
+@keyframes auroraIn {
+  to {
+    opacity: 1;
+  }
+}
+
+/* headline: masked line reveal */
+.hero h1 .ln {
+  display: block;
+  overflow: hidden;
+  padding-block: 0.14em;
+  margin-block: -0.14em;
+}
+.hero h1 .ln > span {
+  display: inline-block;
+}
+.shell.ready .hero-copy > h1 {
+  animation: none;
+}
+.shell.ready .hero h1 .ln > span {
+  animation: lineUp 1.15s calc(0.25s + var(--l) * 0.16s) var(--ease) both;
+}
+@keyframes lineUp {
+  from {
+    transform: translateY(112%);
+    opacity: 0;
+    filter: blur(6px);
+  }
+}
+
+.eyebrow::before {
+  transform-origin: left center;
+}
+.lang-fa .eyebrow::before {
+  transform-origin: right center;
+}
+.shell.ready .eyebrow::before {
+  animation: lineGrow 0.9s 0.3s var(--ease) both;
+}
+@keyframes lineGrow {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+@supports (background-clip: text) or (-webkit-background-clip: text) {
+  .hero .grad {
+    background: linear-gradient(
+        100deg,
+        var(--gold-t) 0 42%,
+        var(--gold-hi) 50%,
+        var(--gold-t) 58% 100%
+      )
+      100% 0 / 260% 100% no-repeat;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .shell.ready .hero .grad {
+    animation: sheen 2.6s 1.5s var(--ease) both;
+  }
+}
+@keyframes sheen {
+  to {
+    background-position: 0 0;
+  }
+}
+
+.btn {
+  position: relative;
+  overflow: hidden;
+}
+.btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    100deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.32) 50%,
+    transparent 70%
+  );
+  transform: translateX(-130%);
+}
+.btn:hover::after {
+  transform: translateX(130%);
+  transition: transform 0.9s var(--ease);
+}
+.btn.ghost::after {
+  display: none;
+}
+
+.stats strong {
+  font-variant-numeric: tabular-nums;
+}
+.shell.ready .stats > div {
+  animation: statIn 0.8s var(--ease) both;
+}
+.shell.ready .stats > :nth-child(1) {
+  animation-delay: 0.9s;
+}
+.shell.ready .stats > :nth-child(2) {
+  animation-delay: 1s;
+}
+.shell.ready .stats > :nth-child(3) {
+  animation-delay: 1.1s;
+}
+@keyframes statIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+/* art: 3D tilt, float, blueprint scan */
+.art-wrap {
+  perspective: 1400px;
+}
+.art {
+  transform: rotateY(calc(var(--mx) * -3.2deg))
+    rotateX(calc(var(--my) * 2.4deg));
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-copy {
+    transform: translateY(calc(var(--hs, 0) * 34px));
+    opacity: calc(1 - var(--hs, 0) * 0.6);
+  }
+  .art-wrap {
+    translate: 0 calc(var(--hs, 0) * -26px);
+  }
+}
+
+/* ============ REFINEMENT: calm, natural motion ============ */
+
+:root {
+  --calm: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* gentler, flatter parallax: an elevation drawing, not a toy */
+.art {
+  transform: rotateY(calc(var(--mx) * -1.4deg)) rotateX(calc(var(--my) * 1deg));
+}
+
+/* copy: slower, softer entrance, no blur */
+.shell.ready .hero-copy > * {
+  animation: heroIn 1.3s var(--calm) both;
+}
+.shell.ready .hero-copy > :nth-child(2) {
+  animation-delay: 0.12s;
+}
+.shell.ready .hero-copy > :nth-child(3) {
+  animation-delay: 0.3s;
+}
+.shell.ready .hero-copy > :nth-child(4) {
+  animation-delay: 0.42s;
+}
+.shell.ready .hero-copy > :nth-child(5) {
+  animation-delay: 0.54s;
+}
+@keyframes heroIn {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+}
+
+.shell.ready .hero h1 .ln > span {
+  animation: lineUp 1.5s calc(0.2s + var(--l) * 0.18s) var(--calm) both;
+}
+@keyframes lineUp {
+  from {
+    transform: translateY(105%);
+    opacity: 0;
+  }
+}
+
+.shell.ready .hero .grad {
+  animation: sheen 3.2s 1.9s cubic-bezier(0.45, 0, 0.2, 1) both;
+}
+
+/* art settles in like a camera coming to rest */
+@media (prefers-reduced-motion: no-preference) {
+  .shell.ready .art {
+    animation: artSettle 2.4s 0.1s var(--calm) both;
+  }
+
+  .arc .cypress {
+    transform-box: fill-box;
+    transform-origin: 50% 100%;
+  }
+  .shell.ready .arc .cypress {
+    animation: sway 7s 3.2s ease-in-out infinite alternate;
+  }
+
+  .shell.ready .arc .ring-o {
+    transform-box: fill-box;
+    transform-origin: 50% 50%;
+    animation: breathe 9s 3s ease-in-out infinite alternate;
+  }
+
+  .arc .bird {
+    fill: none;
+    stroke: var(--a-ink);
+    stroke-width: 1;
+    stroke-linecap: round;
+    opacity: 0;
+  }
+  .shell.ready .arc .b1 {
+    animation: fly 38s 5s linear infinite;
+    --y: 118px;
+    --dy: -22px;
+  }
+  .shell.ready .arc .b2 {
+    animation: fly 46s 12s linear infinite;
+    --y: 150px;
+    --dy: -16px;
+  }
+  .shell.ready .arc .b3 {
+    animation: fly 52s 21s linear infinite;
+    --y: 96px;
+    --dy: -12px;
+  }
+}
+
+[data-theme="dark"] .arc .birds {
+  display: none;
+}
+
+@keyframes artSettle {
+  from {
+    opacity: 0;
+    scale: 1.045;
+  }
+}
+@keyframes sway {
+  from {
+    transform: rotate(-0.7deg);
+  }
+  to {
+    transform: rotate(0.9deg);
+  }
+}
+@keyframes breathe {
+  from {
+    opacity: 0.25;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 0.5;
+    transform: scale(1.05);
+  }
+}
+@keyframes fly {
+  0% {
+    opacity: 0;
+    transform: translate(-40px, var(--y));
+  }
+  6% {
+    opacity: 0.55;
+  }
+  50% {
+    transform: translate(300px, calc(var(--y) + var(--dy)));
+  }
+  94% {
+    opacity: 0.55;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(650px, var(--y));
+  }
+}
+
+/* ============ REFINEMENT 3: quieter backdrop, hero polish, expertise tags ============ */
+
+/* neutral (not cream) sky and ground in light theme */
+.theme-light .art {
+  --sky-b: #eef3f8;
+  --a-ground: #e4e8ec;
+  --a-ground2: #f2f4f7;
+}
+
+/* drifting mist over the skyline, slow sun drift */
+.arc .mist {
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .shell.ready .arc .mist {
+    animation: mist 52s 3.5s linear infinite;
+  }
+  .shell.ready .arc .orb {
+    animation: orbDrift 44s 3.4s ease-in-out infinite alternate;
+  }
+
+  .shell.ready .hero .grad {
+    animation:
+      sheen 3.2s 1.9s cubic-bezier(0.45, 0, 0.2, 1) both,
+      sheenLoop 11s 10s cubic-bezier(0.45, 0, 0.2, 1) infinite;
+  }
+
+  .shell.ready .scroll-cue {
+    animation: cueIn 1.2s 3.6s var(--calm) forwards;
+  }
+  .shell.ready .scroll-cue i {
+    animation: cueDot 2.8s 4.2s cubic-bezier(0.45, 0, 0.2, 1) infinite;
+  }
+}
+
+@keyframes mist {
+  0% {
+    transform: translateX(-280px);
+    opacity: 0;
+  }
+  14%,
+  86% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateX(720px);
+    opacity: 0;
+  }
+}
+@keyframes orbDrift {
+  to {
+    translate: -16px 7px;
+  }
+}
+@keyframes cueIn {
+  to {
+    opacity: 1;
+  }
+}
+@keyframes cueDot {
+  0% {
+    opacity: 0;
+    transform: translateY(0);
+  }
+  25% {
+    opacity: 1;
+  }
+  80%,
+  100% {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+}
+
+.scroll-cue {
+  position: absolute;
+  left: 50%;
+  bottom: 20px;
+  width: 22px;
+  height: 38px;
+  translate: -50% 0;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  opacity: 0;
+}
+.scroll-cue i {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  width: 3px;
+  height: 3px;
+  margin-left: -1.5px;
+  border-radius: 50%;
+  background: var(--gold);
+  opacity: 0;
+}
+.scrolled .scroll-cue {
+  animation: none !important;
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+@media (max-width: 900px) {
+  .scroll-cue {
+    display: none;
+  }
+}
+
+/* expertise: gold fill lives on a pseudo layer so it can fade between tags */
+.tags span {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  transition:
+    color 0.9s var(--calm),
+    border-color 0.9s var(--calm),
+    transform 0.4s var(--calm);
+}
+.tags span::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: linear-gradient(135deg, var(--gold-hi), var(--gold));
+  opacity: 0;
+  transform: scale(0.86);
+  transition:
+    opacity 0.9s var(--calm),
+    transform 0.9s var(--calm);
+}
+.tags span.on {
+  background: var(--panel);
+}
+.tags span.on::before {
+  opacity: 1;
+  transform: none;
+}
+
+/* ============ REFINEMENT 4: depth, light and shadow ============ */
+
+.arc .cast {
+  fill: #14213d;
+  opacity: 0.07;
+  transform-box: fill-box;
+  transform-origin: 50% 0;
+}
+[data-theme="dark"] .arc .cast {
+  fill: #000;
+  opacity: 0.28;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* the sun moves, so the shadow leans slowly */
+  .shell.ready .arc .cast {
+    animation: castLean 56s 3s ease-in-out infinite alternate;
+  }
+
+  /* more depth layers reacting to the pointer */
+  .arc .arc-clouds {
+    translate: calc(var(--mx) * -15px) calc(var(--my) * -4px);
+  }
+  .arc .cypress {
+    translate: calc(var(--mx) * 6px) 0;
+  }
+
+  /* scroll pulls the illustration back slightly */
+  .art-wrap {
+    scale: calc(1 - var(--hs, 0) * 0.035);
+  }
+
+  /* one quiet ring on the primary button */
+  .shell.ready .hero-cta .btn:not(.ghost) {
+    animation: ctaRing 2.6s 5.5s ease-out 2;
+  }
+}
+
+@keyframes sheenLoop {
+  0% {
+    background-position: 100% 0;
+  }
+  32%,
+  100% {
+    background-position: 0 0;
+  }
+}
+@keyframes castLean {
+  from {
+    transform: skewX(-10deg);
+  }
+  to {
+    transform: skewX(8deg);
+  }
+}
+@keyframes ctaRing {
+  from {
+    box-shadow:
+      0 10px 26px var(--btn-shadow),
+      0 0 0 0 color-mix(in srgb, var(--gold) 50%, transparent);
+  }
+  to {
+    box-shadow:
+      0 10px 26px var(--btn-shadow),
+      0 0 0 16px transparent;
   }
 }
 
