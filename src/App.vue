@@ -217,11 +217,48 @@
               <a class="btn ghost" href="#services">
                 {{ t("services.caption") }}
               </a>
+
+              <a
+                class="btn ghost ig-btn"
+                :href="instagramUrl"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram"
+              >
+                <svg
+                  class="ig-ico"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <rect x="3" y="3" width="18" height="18" rx="5" />
+                  <circle cx="12" cy="12" r="4.2" />
+                  <circle
+                    cx="17.4"
+                    cy="6.6"
+                    r="1"
+                    fill="currentColor"
+                    stroke="none"
+                  />
+                </svg>
+                <span class="ig-handle">@{{ instagramHandle }}</span>
+              </a>
             </div>
 
             <div class="stats">
               <div v-for="s in stats" :key="s.key">
-                <strong> {{ num(animated[s.key]) }}+ </strong>
+                <strong>
+                  {{ statNum(animated[s.key]).value
+                  }}<small v-if="statNum(animated[s.key]).unit">{{
+                    statNum(animated[s.key]).unit
+                  }}</small
+                  ><i>+</i>
+                </strong>
 
                 <span>
                   {{ s.label[language] }}
@@ -1025,8 +1062,8 @@
                   {{ t(`office.${o.phone}`) }}
                 </a>
 
-                <a :href="`mailto:${email}`">
-                  {{ email }}
+                <a :href="`tel:${o.rawMobile}`">
+                  {{ t(`office.${o.mobile}`) }}
                 </a>
               </article>
             </div>
@@ -1040,8 +1077,34 @@
               aria-hidden="true"
             ></div>
 
-            <a :href="`mailto:${email}`">
-              {{ email }}
+            <a
+              :href="instagramUrl"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram"
+            >
+              <svg
+                class="ig-logo"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <rect x="3" y="3" width="18" height="18" rx="5" />
+                <circle cx="12" cy="12" r="4.2" />
+                <circle
+                  cx="17.4"
+                  cy="6.6"
+                  r="1"
+                  fill="currentColor"
+                  stroke="none"
+                />
+              </svg>
+              <span>@{{ instagramHandle }}</span>
             </a>
           </div>
         </div>
@@ -1186,6 +1249,18 @@ const brand = computed(() =>
 const num = (n) =>
   Number(n).toLocaleString(language.value === "fa" ? "fa-IR" : "en-US");
 
+/* compact stat numbers: 13000 -> "13 هزار" / "13K", 6800 -> "6.8 هزار" / "6.8K" */
+const statNum = (n) => {
+  const v = Number(n);
+  const fa = language.value === "fa";
+  if (v < 1000) return { value: num(v), unit: "" };
+  const k = Math.round((v / 1000) * 10) / 10;
+  const value = k.toLocaleString(fa ? "fa-IR" : "en-US", {
+    maximumFractionDigits: 1,
+  });
+  return { value, unit: fa ? " هزار" : "K" };
+};
+
 /* ---------- DATA ---------- */
 
 const logoWins = [
@@ -1311,7 +1386,7 @@ let tagTimer;
 const stats = [
   {
     key: "experience",
-    target: 12,
+    target: 50,
     label: {
       en: "Years experience",
       fa: "سال تجربه",
@@ -1319,7 +1394,7 @@ const stats = [
   },
   {
     key: "projects",
-    target: 500,
+    target: 13000,
     label: {
       en: "Successful deals",
       fa: "معامله موفق",
@@ -1327,7 +1402,7 @@ const stats = [
   },
   {
     key: "clients",
-    target: 350,
+    target: 6800,
     label: {
       en: "Happy clients",
       fa: "مشتری راضی",
@@ -1335,7 +1410,8 @@ const stats = [
   },
 ];
 
-const email = "info@sadaf-estate.com";
+const instagramHandle = "amlak.sadaf.kermanshah";
+const instagramUrl = `https://instagram.com/${instagramHandle}`;
 
 const offices = [
   {
@@ -1345,6 +1421,8 @@ const offices = [
     addr: "address1",
     phone: "phone1",
     raw: "+982122345678",
+    mobile: "mobile1",
+    rawMobile: "+989121234567",
   },
   {
     k: 2,
@@ -1353,6 +1431,8 @@ const offices = [
     addr: "address2",
     phone: "phone2",
     raw: "+982122678901",
+    mobile: "mobile2",
+    rawMobile: "+989129876543",
   },
 ];
 
@@ -1482,6 +1562,8 @@ const translations = {
         "kermanshah, Zafaraniyeh, Moghaddas Ardabili St., No. 45, Floor 2",
       phone1: "+98-21-22345678",
       phone2: "+98-21-22678901",
+      mobile1: "+98-912-1234567",
+      mobile2: "+98-912-9876543",
     },
 
     footer: {
@@ -1489,7 +1571,7 @@ const translations = {
         "Sadaf Real Estate Consultants — your trusted partner in buying, selling, renting and investing.",
       copyright: "© Sadaf Estate 2025",
       bottom: "Specialized real estate consulting & investment",
-      COMPANY: "Company",
+      COMPANY: "Quick links",
       SERVICES: "Services",
       RESOURCES: "Resources",
     },
@@ -1585,6 +1667,8 @@ const translations = {
       address2: "کرمانشاه، زعفرانیه، خیابان مقدس اردبیلی، پلاک ۴۵، طبقه ۲",
       phone1: "۰۲۱-۲۲۳۴۵۶۷۸",
       phone2: "۰۲۱-۲۲۶۷۸۹۰۱",
+      mobile1: "۰۹۱۲-۱۲۳۴۵۶۷",
+      mobile2: "۰۹۱۲-۹۸۷۶۵۴۳",
     },
 
     footer: {
@@ -1592,7 +1676,7 @@ const translations = {
         "مشاورین املاک صدف؛ همراه مطمئن شما در خرید، فروش، اجاره و سرمایه‌گذاری املاک.",
       copyright: "© املاک صدف ۱۴۰۴",
       bottom: "مشاوره تخصصی خرید، فروش و سرمایه‌گذاری املاک",
-      COMPANY: "شرکت",
+      COMPANY: "دسترسی سریع",
       SERVICES: "خدمات",
       RESOURCES: "منابع",
     },
@@ -2978,7 +3062,7 @@ a {
 }
 
 .stats > div {
-  padding: 16px 26px;
+  padding: 14px 22px;
 }
 
 .stats > div + div {
@@ -2987,7 +3071,9 @@ a {
 
 .stats strong {
   display: block;
-  font-size: 26px;
+  font-size: 24px;
+  line-height: 1.25;
+  white-space: nowrap;
   color: var(--text);
   font-family: var(--font-d);
 }
@@ -3297,7 +3383,44 @@ a {
 
 @media (max-width: 640px) {
   .tag {
-    display: none;
+    gap: 6px;
+    padding: 4px 8px;
+    font-size: 10.5px;
+    line-height: 1.4;
+  }
+
+  .tag i {
+    width: 5px;
+    height: 5px;
+  }
+
+  .tblock {
+    gap: 9px;
+    padding: 8px 12px 8px 10px;
+    max-width: calc(100% - 9%);
+  }
+
+  .tblock b {
+    font-size: 11.5px;
+  }
+
+  .tblock small {
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 380px) {
+  .tag {
+    padding: 3px 6px;
+    font-size: 9.5px;
+  }
+
+  .tblock b {
+    font-size: 10.5px;
+  }
+
+  .tblock small {
+    font-size: 9px;
   }
 }
 
@@ -3771,6 +3894,9 @@ h2 em {
 .cvis a {
   position: absolute;
   bottom: 30px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   padding-bottom: 6px;
 
   border-bottom: 1px solid var(--line);
@@ -3778,6 +3904,12 @@ h2 em {
   color: var(--gold-t);
   font-size: 13px;
   direction: ltr;
+}
+
+.cvis .ig-logo {
+  width: 18px;
+  height: 18px;
+  flex: none;
 }
 
 /* ============ FOOTER ============ */
@@ -4916,6 +5048,120 @@ h2 em {
     color-mix(in srgb, var(--gold) 3%, var(--panel)) 55%,
     var(--panel) 100%
   );
+}
+
+/* ============ HERO UPGRADE: instagram button, richer art motion ============ */
+
+/* instagram button sits in the CTA row, same height as the other buttons */
+.ig-btn {
+  gap: 10px;
+}
+.ig-btn .ig-ico {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  padding: 3px;
+  box-sizing: content-box;
+  border-radius: 7px;
+  color: #fff;
+  background: linear-gradient(45deg, #f9a825 0%, #ee2a7b 55%, #6228d7 100%);
+  transition: transform 0.5s var(--calm);
+}
+.ig-btn:hover .ig-ico {
+  transform: rotate(-8deg) scale(1.08);
+}
+.ig-btn .ig-handle {
+  direction: ltr;
+  unicode-bidi: isolate;
+  letter-spacing: 0.01em;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* illustration breathes up and down */
+  .shell.ready .arc {
+    animation: arcFloat 9s 3s ease-in-out infinite alternate;
+  }
+
+  /* title block floats gently once visible */
+  .shell.ready .tblock {
+    animation:
+      arcTitle 0.9s 3.1s var(--ease) both,
+      tbFloat 7s 4.2s ease-in-out infinite alternate;
+  }
+
+  /* eyebrow line glows */
+  .shell.ready .eyebrow::before {
+    animation:
+      lineGrow 0.9s 0.3s var(--ease) both,
+      eyeGlow 4s 1.6s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes arcFloat {
+  from {
+    translate: 0 0;
+  }
+  to {
+    translate: 0 -7px;
+  }
+}
+@keyframes tbFloat {
+  from {
+    translate: 0 0;
+  }
+  to {
+    translate: 0 -4px;
+  }
+}
+@keyframes eyeGlow {
+  from {
+    opacity: 0.55;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero-cta .btn {
+    padding-inline: 20px;
+  }
+}
+
+/* stats: compact number, small unit and plus sign */
+.stats strong small {
+  margin-inline-start: 2px;
+  font-size: 0.55em;
+  font-weight: 600;
+  color: var(--text2);
+}
+.stats strong i {
+  margin-inline-start: 1px;
+  font-style: normal;
+  font-size: 0.8em;
+  color: var(--gold-t);
+}
+.stats span {
+  display: block;
+  margin-top: 2px;
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .stats {
+    display: grid;
+    width: 100%;
+  }
+  .stats > div {
+    padding: 12px 8px;
+    text-align: center;
+  }
+  .stats strong {
+    font-size: 19px;
+  }
+  .stats span {
+    font-size: 10.5px;
+  }
 }
 
 /* ============ REDUCED MOTION ============ */
