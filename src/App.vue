@@ -1188,6 +1188,18 @@
 
         <div class="f-bottom">
           <span>{{ t("footer.bottom") }}</span>
+
+          <p class="f-rights">
+            {{ t("footer.rights") }}
+            <a
+              class="f-credit"
+              href="https://arian-dev-teal.vercel.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {{ t("footer.credit") }}
+            </a>
+          </p>
         </div>
       </div>
     </footer>
@@ -1352,14 +1364,14 @@ const services = [
     },
   },
   {
-    icon: "🏢",
+    icon: "🏗️",
     title: {
-      en: "Property Management",
-      fa: "مدیریت املاک",
+      en: "Joint Construction",
+      fa: "مشارکت در ساخت",
     },
     description: {
-      en: "Full management of residential and commercial properties for owners.",
-      fa: "مدیریت کامل املاک مسکونی و تجاری به نمایندگی از مالکین.",
+      en: "Partnership between property owners and developers to build modern properties with shared investment and benefits.",
+      fa: "ایجاد مشارکت میان مالکین و سازندگان برای نوسازی و ساخت‌وساز اصولی با تقسیم توافقی هزینه‌ها و منافع.",
     },
   },
 ];
@@ -1386,7 +1398,7 @@ let tagTimer;
 const stats = [
   {
     key: "experience",
-    target: 50,
+    target: 20,
     label: {
       en: "Years experience",
       fa: "سال تجربه",
@@ -1481,7 +1493,7 @@ const footerColumns = [
 
 const translations = {
   en: {
-    loader: "Getting your new home ready…",
+    loader: "The Feeling of a New Home...",
 
     header: {
       talk: "Contact us",
@@ -1555,11 +1567,10 @@ const translations = {
       },
       headquarters: "Main office",
       branch: "Branch",
-      kermanshah: "kermanshah office",
-      kermanshahBranch: "Sadaf branch",
-      address1: "kermanshah, Saadat Abad, Darya Blvd., Motahari St., No. 12",
-      address2:
-        "kermanshah, Zafaraniyeh, Moghaddas Ardabili St., No. 45, Floor 2",
+      kermanshah: "Sadaf Estate · Barq St.",
+      kermanshahBranch: "Sadaf Estate · Markazi St.",
+      address1: "kermanshah, 22 Bahman, Barq St., corner of Alley 6",
+      address2: "kermanshah, 22 Bahman, Markazi St., corner of Alley 142",
       phone1: "+98-21-22345678",
       phone2: "+98-21-22678901",
       mobile1: "+98-912-1234567",
@@ -1571,6 +1582,8 @@ const translations = {
         "Sadaf Real Estate Consultants — your trusted partner in buying, selling, renting and investing.",
       copyright: "© Sadaf Estate 2025",
       bottom: "Specialized real estate consulting & investment",
+      rights: "All rights reserved and belong to Sadaf Estate Group.",
+      credit: "Design & development by Arian Kalantari",
       COMPANY: "Quick links",
       SERVICES: "Services",
       RESOURCES: "Resources",
@@ -1587,7 +1600,7 @@ const translations = {
   },
 
   fa: {
-    loader: "در حال آماده‌سازی خانه‌ی جدید شما…",
+    loader: "حس قشنگ خانه نو",
 
     header: {
       talk: "تماس با ما",
@@ -1661,10 +1674,10 @@ const translations = {
       },
       headquarters: "دفتر مرکزی",
       branch: "شعبه",
-      kermanshah: "دفتر کرمانشاه",
-      kermanshahBranch: "شعبه صدف",
-      address1: "کرمانشاه، سعادت‌آباد، بلوار دریا، خیابان مطهری، پلاک ۱۲",
-      address2: "کرمانشاه، زعفرانیه، خیابان مقدس اردبیلی، پلاک ۴۵، طبقه ۲",
+      kermanshah: "املاک صدف · خیابان برق",
+      kermanshahBranch: "املاک صدف · خیابان مرکزی",
+      address1: "کرمانشاه، ۲۲ بهمن، خیابان برق، نبش کوی ۶",
+      address2: "کرمانشاه، ۲۲ بهمن، خیابان مرکزی، نبش کوی ۱۴۲",
       phone1: "۰۲۱-۲۲۳۴۵۶۷۸",
       phone2: "۰۲۱-۲۲۶۷۸۹۰۱",
       mobile1: "۰۹۱۲-۱۲۳۴۵۶۷",
@@ -1676,6 +1689,8 @@ const translations = {
         "مشاورین املاک صدف؛ همراه مطمئن شما در خرید، فروش، اجاره و سرمایه‌گذاری املاک.",
       copyright: "© املاک صدف ۱۴۰۴",
       bottom: "مشاوره تخصصی خرید، فروش و سرمایه‌گذاری املاک",
+      rights: "تمامی حقوق محفوظ و متعلق به گروه مشاورین املاک صدف می‌باشد",
+      credit: "طراحی و توسعه آرین کلانتری",
       COMPANY: "دسترسی سریع",
       SERVICES: "خدمات",
       RESOURCES: "منابع",
@@ -1850,7 +1865,7 @@ const initLottie = () => {
   lottieInstance = lottie.loadAnimation({
     container: lottieRef.value,
     renderer: "svg",
-    loop: true,
+    loop: false,
     autoplay: true,
     animationData: buildingsAnimation,
     rendererSettings: {
@@ -3990,9 +4005,35 @@ h2 em {
 }
 
 .f-bottom {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 24px;
   padding-top: 22px;
   color: var(--text3);
   font-size: 12px;
+}
+
+.f-rights {
+  margin: 0;
+  line-height: 1.9;
+}
+
+.f-credit {
+  display: block;
+  width: fit-content;
+  color: var(--gold-t);
+  font-weight: 600;
+  border-bottom: 1px solid transparent;
+  transition:
+    border-color 0.25s,
+    color 0.25s;
+}
+
+.f-credit:hover {
+  color: var(--gold);
+  border-bottom-color: currentColor;
 }
 
 .to-top {
@@ -4293,6 +4334,11 @@ h2 em {
 
   .f-col {
     border-bottom: 1px solid var(--soft);
+  }
+
+  .f-top {
+    padding-bottom: 0;
+    border-bottom: 0;
   }
 
   .f-col button {
