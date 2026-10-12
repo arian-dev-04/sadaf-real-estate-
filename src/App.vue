@@ -14,19 +14,26 @@
     }}</a>
 
     <!-- LOADER: Lottie buildings -->
-    <Transition name="fade">
+    <Transition name="open" :duration="{ enter: 0, leave: 1900 }">
       <div v-if="loading" class="loader" role="status" aria-live="polite">
-        <div ref="lottieRef" class="ld-lottie" aria-hidden="true"></div>
+        <i class="ld-door l" aria-hidden="true"></i>
+        <i class="ld-door r" aria-hidden="true"></i>
 
-        <strong class="ld-brand">مشاورین املاک صدف</strong>
+        <div class="ld-core">
+          <div ref="lottieRef" class="ld-lottie" aria-hidden="true"></div>
 
-        <p>{{ t("loader") }}</p>
+          <strong class="ld-brand">مشاورین املاک صدف</strong>
 
-        <div class="ld-bar">
-          <span :style="{ width: progress + '%' }" />
+          <p>{{ t("loader") }}</p>
+
+          <div class="ld-bar">
+            <span :style="{ width: progress + '%' }" />
+          </div>
+
+          <em>{{ num(progress) }}٪</em>
         </div>
 
-        <em>{{ num(progress) }}٪</em>
+        <i class="ld-seam" aria-hidden="true"></i>
       </div>
     </Transition>
 
@@ -2084,7 +2091,7 @@ const runLoader = () => {
       document.body.classList.remove("lock");
 
       nextTick(observe);
-    }, 250);
+    }, 400);
   };
 
   loadRaf = requestAnimationFrame(tick);
@@ -2519,23 +2526,60 @@ a {
   position: fixed;
   inset: 0;
   z-index: 5000;
+  font-size: 14px;
+  overflow: hidden;
+}
 
+.ld-door {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50.2%;
+  background:
+    radial-gradient(
+      circle at 50% 40%,
+      color-mix(in srgb, var(--gold) 14%, transparent),
+      transparent 60%
+    ),
+    var(--bg);
+  will-change: transform;
+}
+.ld-door.l {
+  left: 0;
+}
+.ld-door.r {
+  right: 0;
+}
+
+.ld-core {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-
   gap: 10px;
+}
 
-  background:
-    radial-gradient(
-      circle at 50% 40%,
-      color-mix(in srgb, var(--gold) 16%, transparent),
-      transparent 40%
-    ),
-    var(--bg);
-
-  font-size: 14px;
+.ld-seam {
+  position: absolute;
+  z-index: 3;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  margin-left: -1px;
+  opacity: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    var(--gold-hi) 30%,
+    var(--gold) 70%,
+    transparent
+  );
+  box-shadow: 0 0 24px color-mix(in srgb, var(--gold) 70%, transparent);
+  transform-origin: 50% 50%;
 }
 
 .ld-lottie {
@@ -2606,8 +2650,64 @@ a {
   opacity: 0;
 }
 
-.loader.fade-leave-to {
-  transform: scale(1.04);
+/* باز شدن لودر */
+.open-leave-active {
+  pointer-events: none;
+}
+
+.open-leave-active .ld-core {
+  transition:
+    opacity 0.55s ease,
+    transform 0.9s var(--ease),
+    filter 0.55s ease;
+}
+.open-leave-to .ld-core {
+  opacity: 0;
+  transform: scale(1.08);
+  filter: blur(6px);
+}
+
+.open-leave-active .ld-seam {
+  animation: seamFlash 1.5s 0.25s var(--ease) both;
+}
+
+.open-leave-active .ld-door {
+  transition: transform 1.15s 0.7s cubic-bezier(0.76, 0, 0.24, 1);
+}
+.open-leave-to .ld-door.l {
+  transform: translateX(-101%);
+}
+.open-leave-to .ld-door.r {
+  transform: translateX(101%);
+}
+
+@keyframes seamFlash {
+  0% {
+    opacity: 0;
+    transform: scaleY(0);
+  }
+  30%,
+  60% {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scaleY(1);
+  }
+}
+
+/* ورود نرم صفحه زیر لنگه‌ها */
+@media (prefers-reduced-motion: no-preference) {
+  .shell.ready main {
+    animation: pageIn 1.8s 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+}
+@keyframes pageIn {
+  from {
+    opacity: 0;
+    transform: scale(1.035);
+  }
 }
 
 /* ============ HEADER ============ */
@@ -2627,11 +2727,9 @@ a {
   z-index: -1;
   pointer-events: none;
   opacity: 0;
-  background: color-mix(in srgb, var(--panel) 84%, transparent);
-  backdrop-filter: blur(18px) saturate(1.4);
-  -webkit-backdrop-filter: blur(18px) saturate(1.4);
+  background: var(--bg);
   border-bottom: 1px solid var(--soft);
-  box-shadow: 0 10px 34px rgba(20, 33, 61, 0.08);
+  box-shadow: 0 8px 24px rgba(20, 33, 61, 0.06);
   transition: opacity 0.45s var(--ease);
 }
 
@@ -2736,7 +2834,7 @@ a {
   padding: 4px;
   border-radius: 12px;
 
-  background: color-mix(in srgb, var(--panel) 60%, transparent);
+  background: var(--bg2);
   border: 1px solid var(--soft);
 }
 
