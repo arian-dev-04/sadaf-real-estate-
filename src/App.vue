@@ -1200,7 +1200,7 @@
             {{ t("footer.rights") }}
             <a
               class="f-credit"
-              href="https://arian-dev-teal.vercel.app/"
+              href="https://ariankdev.ir/"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -1552,7 +1552,7 @@ const translations = {
         Land: "Land",
         Villas: "Villas",
         Offices: "Offices",
-        Legal: "Legal",
+        Legal: "Partnership",
       },
     },
 
@@ -1659,7 +1659,7 @@ const translations = {
         Land: "زمین",
         Villas: "ویلا",
         Offices: "اداری",
-        Legal: "حقوقی",
+        Legal: "مشارکت",
       },
     },
 
@@ -3955,17 +3955,89 @@ h2 em {
 }
 
 .offices a {
-  display: block;
-  padding: 3px 0;
-  color: var(--text2);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: fit-content;
+  /* pinned to the physical left of the card, in both languages */
+  margin-left: -6px;
+  margin-right: auto;
+  padding: 5px 12px 5px 6px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  color: var(--text);
   font-size: 13px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
   direction: ltr;
   text-align: start;
-  transition: color 0.2s;
+  transition:
+    color 0.25s,
+    background 0.25s,
+    border-color 0.25s,
+    transform 0.35s var(--ease);
 }
 
-.offices a:hover {
+/* round badge with a phone / mobile icon */
+.offices a::before {
+  content: "";
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: color-mix(in srgb, var(--gold) 16%, transparent);
+  background-image: var(--ph-ico);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 14px;
+  transition:
+    background-color 0.25s,
+    transform 0.4s var(--ease);
+}
+
+/* mobile icon for every number */
+.offices a {
+  --ph-ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239c7010' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='6' y='2' width='12' height='20' rx='3'/%3E%3Cpath d='M11 18h2'/%3E%3C/svg%3E");
+}
+
+[data-theme="dark"] .offices a {
+  --ph-ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e4b955' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='6' y='2' width='12' height='20' rx='3'/%3E%3Cpath d='M11 18h2'/%3E%3C/svg%3E");
+}
+
+.offices a:hover,
+.offices a:focus-visible {
   color: var(--gold-t);
+  border-color: var(--line);
+  background: color-mix(in srgb, var(--gold) 9%, transparent);
+  transform: translateX(3px);
+}
+
+.offices a:hover::before {
+  background-color: color-mix(in srgb, var(--gold) 30%, transparent);
+  transform: rotate(-12deg) scale(1.08);
+}
+
+.offices a:active {
+  transform: scale(0.98);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .shell.ready .offices a::before {
+    animation: callRing 4.5s 4s ease-out infinite;
+  }
+  .shell.ready .offices a:nth-of-type(2)::before {
+    animation-delay: 5.2s;
+  }
+}
+
+@keyframes callRing {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--gold) 45%, transparent);
+  }
+  30%,
+  100% {
+    box-shadow: 0 0 0 9px transparent;
+  }
 }
 
 .cvis {
@@ -4119,19 +4191,70 @@ h2 em {
 }
 
 .f-credit {
+  position: relative;
   display: block;
   width: fit-content;
+  padding-bottom: 4px;
   color: var(--gold-t);
   font-weight: 600;
-  border-bottom: 1px solid transparent;
-  transition:
-    border-color 0.25s,
-    color 0.25s;
+  transition: color 0.25s;
+}
+
+/* moving line under the credit */
+.f-credit::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(
+      90deg,
+      transparent 0%,
+      var(--gold-hi) 50%,
+      transparent 100%
+    )
+    0 0 / 60% 100% no-repeat;
+  opacity: 0.9;
+  animation: creditLine 2.8s ease-in-out infinite alternate;
+}
+
+.lang-fa .f-credit::after {
+  background-position: 100% 0;
+  animation-name: creditLineRtl;
 }
 
 .f-credit:hover {
   color: var(--gold);
-  border-bottom-color: currentColor;
+}
+
+.f-credit:hover::after {
+  animation-duration: 1.2s;
+}
+
+@keyframes creditLine {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 100% 0;
+  }
+}
+
+@keyframes creditLineRtl {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: 0 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .f-credit::after {
+    animation: none;
+    background-size: 100% 100%;
+  }
 }
 
 .to-top {
