@@ -1051,28 +1051,28 @@
               <em>{{ t("office.title.line2") }}</em>
             </h2>
 
-            <div class="offices">
-              <article v-for="o in offices" :key="o.k" class="card">
-                <small>
-                  {{ t(`office.${o.label}`) }}
-                </small>
+            <div class="offices card">
+              <div class="o-addrs">
+                <article v-for="o in offices" :key="o.k" class="o-addr">
+                  <small>
+                    {{ t(`office.${o.label}`) }}
+                  </small>
 
-                <h3>
-                  {{ t(`office.${o.name}`) }}
-                </h3>
+                  <h3>
+                    {{ t(`office.${o.name}`) }}
+                  </h3>
 
-                <p>
-                  {{ t(`office.${o.addr}`) }}
-                </p>
+                  <p>
+                    {{ t(`office.${o.addr}`) }}
+                  </p>
+                </article>
+              </div>
 
-                <a :href="`tel:${o.raw}`">
-                  {{ t(`office.${o.phone}`) }}
+              <div class="o-phones">
+                <a v-for="p in phones" :key="p.key" :href="`tel:${p.raw}`">
+                  {{ t(`office.${p.key}`) }}
                 </a>
-
-                <a :href="`tel:${o.rawMobile}`">
-                  {{ t(`office.${o.mobile}`) }}
-                </a>
-              </article>
+              </div>
             </div>
           </div>
 
@@ -1438,21 +1438,20 @@ const offices = [
     label: "headquarters",
     name: "kermanshah",
     addr: "address1",
-    phone: "phone1",
-    raw: "+982122345678",
-    mobile: "mobile1",
-    rawMobile: "+989121234567",
   },
   {
     k: 2,
     label: "branch",
     name: "kermanshahBranch",
     addr: "address2",
-    phone: "phone2",
-    raw: "+982122678901",
-    mobile: "mobile2",
-    rawMobile: "+989129876543",
   },
+];
+
+/* three mobile numbers shown at the end of the office box */
+const phones = [
+  { key: "mobile1", raw: "+989183338288" },
+  { key: "mobile2", raw: "+989185593750" },
+  { key: "mobile3", raw: "+989186887789" },
 ];
 
 const footerColumns = [
@@ -1580,8 +1579,9 @@ const translations = {
       address2: "kermanshah, 22 Bahman, Markazi St., corner of Alley 142",
       phone1: "+98-21-22345678",
       phone2: "+98-21-22678901",
-      mobile1: "+98-912-1234567",
-      mobile2: "+98-912-9876543",
+      mobile1: "0918-333-8288",
+      mobile2: "0918-559-3750",
+      mobile3: "0918-688-7789",
     },
 
     footer: {
@@ -1687,8 +1687,9 @@ const translations = {
       address2: "کرمانشاه، ۲۲ بهمن، خیابان مرکزی، نبش کوی ۱۴۲",
       phone1: "۰۲۱-۲۲۳۴۵۶۷۸",
       phone2: "۰۲۱-۲۲۶۷۸۹۰۱",
-      mobile1: "۰۹۱۲-۱۲۳۴۵۶۷",
-      mobile2: "۰۹۱۲-۹۸۷۶۵۴۳",
+      mobile1: "۰۹۱۸-۳۳۳-۸۲۸۸",
+      mobile2: "۰۹۱۸-۵۵۹-۳۷۵۰",
+      mobile3: "۰۹۱۸-۶۸۸-۷۷۸۹",
     },
 
     footer: {
@@ -3933,10 +3934,38 @@ h2 em {
 }
 
 .offices {
+  margin-top: 36px;
+  padding: 28px 32px;
+}
+
+.o-addrs {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
-  margin-top: 36px;
+}
+
+.o-addr {
+  padding-inline-end: 24px;
+}
+
+.o-addr + .o-addr {
+  padding-inline-end: 0;
+  padding-inline-start: 24px;
+  border-inline-start: 1px solid var(--soft);
+}
+
+.o-phones {
+  direction: ltr;
+  justify-content: flex-start;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  margin-top: 22px;
+  padding-top: 20px;
+  border-top: 1px solid var(--soft);
+}
+
+.offices .o-phones a {
+  margin: 0;
 }
 
 .offices small {
@@ -4027,6 +4056,9 @@ h2 em {
   }
   .shell.ready .offices a:nth-of-type(2)::before {
     animation-delay: 5.2s;
+  }
+  .shell.ready .offices a:nth-of-type(3)::before {
+    animation-delay: 6.4s;
   }
 }
 
@@ -4500,8 +4532,20 @@ h2 em {
   }
 
   .cards,
-  .offices {
+  .o-addrs {
     grid-template-columns: 1fr;
+  }
+
+  .o-addr,
+  .o-addr + .o-addr {
+    padding-inline: 0;
+    border-inline-start: 0;
+  }
+
+  .o-addr + .o-addr {
+    margin-top: 18px;
+    padding-top: 18px;
+    border-top: 1px solid var(--soft);
   }
 
   .stats {
