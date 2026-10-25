@@ -1835,11 +1835,32 @@ const save = (k, v) => {
   } catch {}
 };
 
-const toggleTheme = () => {
-  theme.value = theme.value === "dark" ? "light" : "dark";
+let themeTimer;
 
-  save("sadaf-theme", theme.value);
+const toggleTheme = async () => {
+  const root = document.documentElement;
+
+  // freeze every transition / animation for the few frames of the swap,
+  // so the browser repaints once instead of animating hundreds of elements
+  root.classList.add("theme-switching");
+
+  theme.value = theme.value === "dark" ? "light" : "dark";
   applyTheme();
+
+  await nextTick();
+
+  clearTimeout(themeTimer);
+
+  requestAnimationFrame(() =>
+    requestAnimationFrame(() => {
+      themeTimer = setTimeout(() => {
+        root.classList.remove("theme-switching");
+      }, 60);
+    }),
+  );
+
+  // storage write is synchronous: keep it off the critical frame
+  setTimeout(() => save("sadaf-theme", theme.value), 0);
 };
 
 const toggleLanguage = async () => {
@@ -2409,6 +2430,18 @@ body.lock {
   overflow: hidden;
 }
 
+/* theme swap: page colors change in one repaint instead of hundreds of
+   separate transitions. The theme switch itself and the hero artwork
+   (sun <-> moon, animations) are left untouched, and no animation is paused. */
+html.theme-switching
+  *:not(.tsw):not(.tsw *):not(.art):not(.art *):not(.art-wrap),
+html.theme-switching
+  *:not(.tsw):not(.tsw *):not(.art):not(.art *):not(.art-wrap)::before,
+html.theme-switching
+  *:not(.tsw):not(.tsw *):not(.art):not(.art *):not(.art-wrap)::after {
+  transition: none !important;
+}
+
 button {
   font: inherit;
   border: 0;
@@ -2450,10 +2483,6 @@ a {
       transparent 30%
     ),
     var(--bg);
-
-  transition:
-    background 0.4s,
-    color 0.4s;
 }
 
 .lang-fa {
